@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import main
 from .views import bookshelf
+from .views import statistics
 
 urlpatterns = [
     path('main/kkubookmode/', main.kkubookmode),
@@ -16,4 +17,8 @@ urlpatterns = [
     path('bookshelf/<int:bookshelf_id>/', bookshelf.bookshelf_detail),
     path('bookshelf/booklist/', bookshelf.bookshelf_list),
     path('bookshelf/<int:book_id>/memolist', bookshelf.get_memo)
+
+    #path('mypage/kkubookmode/', statistics.),
+    #path('mypage/bookstatistics/<string:yyyymm>/', statistics.),
+    #path('mypage/statistics/', statistics.)
 ]
