@@ -16,9 +16,9 @@ urlpatterns = [
     path('bookshelf/', bookshelf.create_book),
     path('bookshelf/<int:bookshelf_id>/', bookshelf.bookshelf_detail),
     path('bookshelf/booklist/', bookshelf.bookshelf_list),
-    path('bookshelf/<int:book_id>/memolist', bookshelf.get_memo)
+    path('bookshelf/<int:book_id>/memolist', bookshelf.get_memo),
 
-    #path('mypage/kkubookmode/', statistics.),
+    path('mypage/kkubookmode/', statistics.set_kkubookmode)
     #path('mypage/bookstatistics/<string:yyyymm>/', statistics.),
     #path('mypage/statistics/', statistics.)
 ]

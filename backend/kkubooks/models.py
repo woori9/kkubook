@@ -20,9 +20,9 @@ class Book(models.Model):
 
 class KkubookMode(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    level = models.IntegerField()
-    kkubook_days = models.IntegerField()
-    notcommit_days = models.IntegerField()
+    level = models.IntegerField(default=0)
+    kkubook_days = models.IntegerField(default=0)
+    notcommit_days = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

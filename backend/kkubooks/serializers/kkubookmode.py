@@ -9,3 +9,9 @@ class KkubookModeSerializer(serializers.ModelSerializer):
     class Meta:
         model = KkubookMode
         fields = '__all__'
+
+class KkubookModeOnSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = KkubookMode
+        fields = ('user', )
