@@ -27,7 +27,12 @@ function SearchList() {
       >
         <p>검색해서 등록하기</p>
       </ListEle>
-      <ListEle onClick={() => console.log('2')}>
+      <ListEle
+        onClick={() => {
+          onDismiss();
+          navigate('/scanbook');
+        }}
+      >
         <p>바코드로 등록하기</p>
       </ListEle>
       <ListEle

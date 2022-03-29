@@ -1,9 +1,10 @@
 import tw, { styled } from 'twin.macro';
+import { useNavigate } from 'react-router-dom';
 import ProgressBar from '../common/ProgressBar';
 import Svg from '../common/Svg';
 
 const ProfileBox = styled.div`
-  ${tw`px-page-x pb-8`}
+  ${tw`px-page-x pt-[4rem] pb-8`}
   box-shadow: 0 15px 15px -15px rgb(0 0 0 / 0.1);
 `;
 
@@ -37,6 +38,8 @@ const Ol = styled.ol`
 
 function Profile({ userInfo }) {
   const { nickname, isKkubook, kkubookComplete, level, kkubookDays } = userInfo;
+  const navigate = useNavigate();
+
   return (
     <ProfileBox>
       <ProfileTitle>
@@ -75,7 +78,11 @@ function Profile({ userInfo }) {
             </>
           )}
         </div>
-        <button type="button" className="setting-btn">
+        <button
+          type="button"
+          className="setting-btn"
+          onClick={() => navigate('/myinfo/settings')}
+        >
           <Svg stroke="currentColor">
             <path
               strokeLinecap="round"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from 'twin.macro';
 import GoBackBar from '../common/GoBackBar';
 import SearchResult from './SearchResult';
@@ -10,7 +10,6 @@ const SearchBox = styled.div`
 
   p {
     color: #848282;
-    margin-bottom: 1rem;
   }
 
   .search-bar {
@@ -25,6 +24,28 @@ const SearchBox = styled.div`
   input {
     width: 100%;
     border: none;
+  }
+  .conditions {
+    display: flex;
+  }
+  .true {
+    width: 5rem;
+    text-align: center;
+    border: none;
+    background-color: white;
+    border-top: 2px solid #71b864;
+    cursor: pointer;
+  }
+  .true > p {
+    color: #71b864;
+  }
+  .false {
+    width: 5rem;
+    text-align: center;
+    border: none;
+    background-color: white;
+    border-top: 1px solid #848282;
+    cursor: pointer;
   }
 `;
 
@@ -41,6 +62,9 @@ const NoResult = styled.div`
 `;
 
 function SearchBook() {
+  const [isTitle, setTitle] = useState('true');
+  const [isAuthor, setAuthor] = useState('false');
+
   return (
     <>
       <GoBackBar title="책 검색하기" />
@@ -75,6 +99,28 @@ function SearchBook() {
                 clipRule="evenodd"
               />
             </svg>
+          </div>
+          <div className="conditions">
+            <button
+              type="button"
+              className={isTitle}
+              onClick={event => {
+                setTitle('true');
+                setAuthor('false');
+              }}
+            >
+              <p>책 제목</p>
+            </button>
+            <button
+              type="button"
+              className={isAuthor}
+              onClick={() => {
+                setTitle('false');
+                setAuthor('true');
+              }}
+            >
+              <p>저자</p>
+            </button>
           </div>
         </form>
       </SearchBox>

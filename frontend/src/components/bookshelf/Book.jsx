@@ -1,5 +1,6 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
+import StarRatings from 'react-star-ratings';
 
 const StyledBook = styled.li`
   background-color: azure;
@@ -45,14 +46,21 @@ const StyledBook = styled.li`
   }
 `;
 
-function Book({ book }) {
+function Book({ book, handleClick }) {
   return (
-    <StyledBook>
+    <StyledBook onClick={() => handleClick(book.id)}>
       <img src={book.image} alt={book.title} />
       <div className="description">
         <p className="title">{book.title}</p>
         <p>{book.author}</p>
-        <p>별 {book.rating}</p>
+        <StarRatings
+          rating={book.rating / 2}
+          starRatedColor="orange"
+          starEmptyColor="gray"
+          numberOfStars={5}
+          starDimension="18px"
+          starSpacing="0px"
+        />
         <p className="date">
           <span>시작일</span>
           {book.startFrom}

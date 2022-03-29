@@ -1,15 +1,16 @@
-from operator import le
 from django.http import JsonResponse
 import requests
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework.status import (
-    HTTP_204_NO_CONTENT
+    HTTP_204_NO_CONTENT,
+    HTTP_401_UNAUTHORIZED
 )
 from kkubooks.models import KkubookMode
-from .token import create_token
+from .token import create_token, get_request_user
 from rest_framework.decorators import api_view
+
 
 
 User = get_user_model()
@@ -73,9 +74,12 @@ def login_signup(request):
 def signout(request):
     '''
     DELETE: 사용자 정보 DB에서 삭제
-    TODO:
-        user => request.user로 변경
     '''
-    user = User.objects.filter(id=1)
+    user = get_request_user(request)
+
+    if not user:
+        return Response(status=HTTP_401_UNAUTHORIZED)
+        
     user.delete()
     return Response(data='정상적으로 삭제되었습니다.', status=HTTP_204_NO_CONTENT)
+

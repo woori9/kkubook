@@ -1,7 +1,7 @@
-import axios from 'axios';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
+import apiInstance from '../utils/apiInstance';
 import { getToken, getUserInfo } from '../api/user';
 import useStore from '../stores/user';
 import walkingKkubook from '../assets/walking_kkubook.png';
@@ -61,7 +61,8 @@ function KakaoRedirectHandler() {
             created_at,
             access_token,
           } = res.data;
-          axios.defaults.headers.common.Authorization = `Bearer ${access_token}`;
+          console.log(res);
+          apiInstance.defaults.headers.common.Authorization = `Bearer ${access_token}`;
           setUserInfo({
             userId: user_id,
             kkubookComplete: kkubook_complete,
