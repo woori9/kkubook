@@ -1,16 +1,22 @@
+import json
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from ..models import (
-  KkubookMode
+  KkubookMode,
+  Commit,
+  Bookshelf,
+  Category
 )
 from ..serializers.kkubookmode import (
     KkubookModeSerializer,
     KkubookModeOnSerializer
 )
 import datetime
+from django.db.models import Q
+from django.http import JsonResponse
 
 User = get_user_model()
 
@@ -31,7 +37,34 @@ def set_kkubookmode(request):
         user.delete()
         return Response(data='정상적으로 삭제되었습니다.', status=status.HTTP_204_NO_CONTENT)
 
-#@api_view(['GET'])
-#def get_user_statistics(yyyymm):
-    # 독서량 통계
+@api_view(['GET'])
+def get_user_statistics(request, yyyymm):
+
+    if request.method == 'GET':
+        year=yyyymm[0:4]
+        month=yyyymm[4:6]
+
+        # 독서량 통계
+        # commit table에서 start time의 x달 commit 수
+        commit_num = Commit.objects.filter(start_time__contains=year+'-'+month).count()
+
+        # BookShelf table에서 book status가 완독(0)+읽는 중(1)인 책 수
+        books = Bookshelf.objects.filter(Q(start_date__contains=year+'-'+month), Q(book_status=0) | Q(book_status=1))
+        book_num = books.count()
+
+        # 장르 통계
+        # bookshelf table에서 x달에 완독(0)+읽는 중(1)인 책의 장르 리스트
+        category = []
+        for model_instance in books:
+            main_category = Category.objects.get(book_id=model_instance.book_id).main
+            print('book : ', main_category)
+            category.append(main_category)
+
+        response_data = {
+            "commit_num" : commit_num,
+            "book_num" : book_num,
+            "category" : category
+        }
+        
+        return JsonResponse(response_data, json_dumps_params={'ensure_ascii': False})
     

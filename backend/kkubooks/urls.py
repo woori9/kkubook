@@ -25,7 +25,7 @@ urlpatterns = [
     path('memo/<int:memo_id>/', memo.memo_detail),
     path('memo/bookmark/<int:memo_id>/', memo.memo_bookmark),
 
-    path('mypage/kkubookmode/', statistics.set_kkubookmode)
-    #path('mypage/bookstatistics/<string:yyyymm>/', statistics.),
+    path('mypage/kkubookmode/', statistics.set_kkubookmode),
+    path('mypage/bookstatistics/<str:yyyymm>/', statistics.get_user_statistics),
     #path('mypage/statistics/', statistics.)
 ]
