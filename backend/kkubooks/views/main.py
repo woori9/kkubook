@@ -98,10 +98,10 @@ def commit(request, book_id):
     '''
     if request.method == 'POST':
         serializer = CommitSerializer(data=request.data)
-        user_id = User.objects.get(pk=request.data['user_id'])
-        book_num = Book.objects.get(pk=book_id)
+        user = User.objects.get(pk=request.data['user'])
+        book = Book.objects.get(pk=book_id)
         if serializer.is_valid(raise_exception=True):
-            serializer.save(user_id=user_id, book_id=book_num)
+            serializer.save(user=user, book=book)
             return Response(serializer.data, status=HTTP_201_CREATED)
 
 

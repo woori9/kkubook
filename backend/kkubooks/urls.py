@@ -2,6 +2,7 @@ from django.urls import path
 from .views import main
 from .views import bookshelf
 from .views import statistics
+from .views import memo
 
 urlpatterns = [
     path('main/kkubookmode/', main.kkubookmode),
@@ -17,6 +18,12 @@ urlpatterns = [
     path('bookshelf/<int:bookshelf_id>/', bookshelf.bookshelf_detail),
     path('bookshelf/booklist/', bookshelf.bookshelf_list),
     path('bookshelf/<int:book_id>/memolist', bookshelf.get_memo),
+    path('bookshelf/naver/search/', bookshelf.get_naver_api),
+
+    path('memo/', memo.create_memo),
+    path('memolist/', memo.memo_list),
+    path('memo/<int:memo_id>/', memo.memo_detail),
+    path('memo/bookmark/<int:memo_id>/', memo.memo_bookmark),
 
     path('mypage/kkubookmode/', statistics.set_kkubookmode)
     #path('mypage/bookstatistics/<string:yyyymm>/', statistics.),

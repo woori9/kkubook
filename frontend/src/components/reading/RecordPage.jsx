@@ -67,6 +67,7 @@ function RecordPage({ time, setIsReadingPage }) {
       return;
     }
 
+    // 차후 값이 valid 한지 확인하는 로직 추가
     setPage(Number(submittedPage));
   };
 

@@ -3,7 +3,7 @@ import ProgressBar from '../common/ProgressBar';
 import Svg from '../common/Svg';
 
 const ProfileBox = styled.div`
-  ${tw`pt-page-top px-page-x pb-8`}
+  ${tw`px-page-x pb-8`}
   box-shadow: 0 15px 15px -15px rgb(0 0 0 / 0.1);
 `;
 

@@ -37,13 +37,12 @@ const StyledPageInput = styled.div`
   }
 
   .options {
-    width: 7rem;
+    width: 120px;
     height: 5rem;
-    background-color: pink;
     position: absolute;
     z-index: 4;
     top: -90px;
-    right: 5px;
+    right: 10px;
   }
 
   .option-button {
@@ -51,6 +50,18 @@ const StyledPageInput = styled.div`
     width: 100%;
     height: 30px;
     margin: 5px 0px;
+  }
+
+  .done {
+    ${tw`bg-main-green`}
+  }
+
+  .stop {
+    ${tw`bg-light-gray`}
+  }
+
+  .button-content {
+    display: flex;
   }
 `;
 
@@ -79,52 +90,56 @@ function PageInput() {
       <div className="options">
         <button
           type="button"
-          className="option-button"
+          className="option-button done"
           onClick={() => {
             submitPage('done');
             hideBottomSheet();
           }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-            width={20}
-            height={20}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-          다 읽었어요!
+          <div className="button-content">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              width={20}
+              height={20}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <p>다 읽었어요!</p>
+          </div>
         </button>
         <button
           type="button"
-          className="option-button"
+          className="option-button stop"
           onClick={() => submitPage('stop')}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-            width={20}
-            height={20}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-            />
-          </svg>
-          그만 읽을래요.
+          <div className="button-content">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              width={20}
+              height={20}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+              />
+            </svg>
+            <p>그만 읽을래요.</p>
+          </div>
         </button>
       </div>
     </StyledPageInput>

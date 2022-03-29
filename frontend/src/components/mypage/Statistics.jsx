@@ -1,25 +1,63 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
-import days from '../../utils/days';
+import { months, days } from '../../utils/days';
 import Svg from '../common/Svg';
+import DoughnutChart from './DoughnutChart';
 
 const StatisticBox = styled.div`
   ${tw`px-page-x`}
-  background-color: #8DCD84;
+  background: none;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background-color: #8dcd84;
+  }
+
+  .month-div {
+    display: flex;
+    justify-content: space-evenly;
+  }
+
   .date {
+    font-size: 16px;
     text-align: center;
+    z-index: 1;
+  }
+
+  .year {
+    position: relative;
+    font-size: 14px;
+    padding-top: 1rem;
+  }
+
+  .prev-next {
+    color: #fff;
+  }
+`;
+
+const Month = styled.button`
+  ${tw`border-none bg-transparent`}
+
+  &.possible {
+    cursor: pointer;
   }
 `;
 
 const Dl = styled.dl`
-  ${tw`flex justify-around py-5`}
+  ${tw`flex justify-evenly py-5`}
 `;
 
 const Box = styled.div`
-  ${tw`flex flex-col items-center bg-white px-3 py-2`}
+  ${tw`flex flex-col items-center bg-white p-3 mb-3`}
   border: 0.1px solid #a1a1a1;
   border-radius: 10px;
   box-shadow: 0px 2px 4px 0px #00000040;
+  z-index: 1;
 
   .desc-data {
     display: flex;
@@ -27,20 +65,82 @@ const Box = styled.div`
     margin-top: 0.25rem;
 
     dt {
-      margin-right: 0.75rem;
+      margin-right: 1rem;
     }
   }
 `;
 
 const today = new Date();
+
+// 가장 마지막 달(=달력 기준 이번 달)
 const thisYear = today.getFullYear();
 const thisMonth = today.getMonth() + 1;
 
-function Statistics() {
+const lastYearMonth =
+  thisYear.toString() +
+  (thisMonth < 10 ? `0${thisMonth.toString()}` : thisMonth.toString());
+
+function Statistics({ createdAt }) {
+  // TODO: get~Month 함수 호출 때 api 요청
+  const [year, setYear] = React.useState(thisYear);
+  const [monthIdx, setMonthIdx] = React.useState(thisMonth - 1);
+  // 가장 첫 달(=유저가 db에 created 된 날)
+  const firstYearMonth = createdAt.split('-').slice(0, 2).join('');
+
+  // 현재 통계를 보고 있는 달
+  let currentYearMonth =
+    year.toString() +
+    (months[monthIdx] < 10
+      ? `0${months[monthIdx]}`
+      : months[monthIdx].toString());
+
+  React.useEffect(() => {
+    currentYearMonth =
+      year.toString() +
+      (months[monthIdx] < 10
+        ? `0${months[monthIdx]}`
+        : months[monthIdx].toString());
+  }, [monthIdx]);
+
+  function getPrevMonth() {
+    if (months[monthIdx] - 1 < 1) setYear(prev => prev - 1);
+    setMonthIdx((monthIdx + 11) % 12);
+  }
+
+  function getNextMonth() {
+    if (months[monthIdx] + 1 > 12) setYear(prev => prev + 1);
+    setMonthIdx((monthIdx + 1) % 12);
+  }
+
   return (
     <StatisticBox>
-      <p className="date">{thisYear}</p>
-      <p className="date">{thisMonth}</p>
+      <p className="date year">{year}</p>
+      <div className="month-div">
+        {/* 첫 달 제한 */}
+        {currentYearMonth <= firstYearMonth ? (
+          <Month disabled />
+        ) : (
+          <Month
+            className="possible date prev-next"
+            onClick={() => getPrevMonth()}
+          >
+            {months[(monthIdx + 11) % 12]}
+          </Month>
+        )}
+        {/* 이번 달 */}
+        <Month className="date">{months[monthIdx]}</Month>
+        {/* 끝 달 제한 */}
+        {lastYearMonth <= currentYearMonth ? (
+          <Month disabled />
+        ) : (
+          <Month
+            className="possible date prev-next"
+            onClick={() => getNextMonth()}
+          >
+            {months[(monthIdx + 1) % 12]}
+          </Month>
+        )}
+      </div>
       <Dl>
         <Box>
           <Svg stroke="currentColor">
@@ -70,15 +170,13 @@ function Statistics() {
           <div className="desc-data">
             <dt>독서일</dt>
             <dd>
-              <strong>6</strong>일 / <strong>{days[thisMonth]}</strong>일
+              <strong>6</strong>일 / <strong>{days[monthIdx]}</strong>일
             </dd>
           </div>
         </Box>
       </Dl>
       <Box>
-        <p>장르별</p>
-        <p>그래프</p>
-        <p>정보...</p>
+        <DoughnutChart />
       </Box>
     </StatisticBox>
   );

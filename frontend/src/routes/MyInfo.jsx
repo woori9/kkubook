@@ -12,7 +12,7 @@ function MyInfo() {
       <Navbar />
       <FabButton />
       <Profile userInfo={userInfo} />
-      <Statistics />
+      <Statistics createdAt={userInfo.createdAt} />
     </>
   );
 }

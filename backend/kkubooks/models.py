@@ -39,7 +39,7 @@ class Memo(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.PROTECT)
     content = models.TextField(max_length=500, blank=True)
-    memo_img = models.ImageField(blank=True, upload_to=img_path)
+    memo_img = models.ImageField(blank=True, upload_to='%Y/%m/%d')
     memo_mark = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

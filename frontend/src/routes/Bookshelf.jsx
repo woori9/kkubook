@@ -1,26 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { styled } from 'twin.macro';
 import Navbar from '../components/common/Navbar';
 import FabButton from '../components/common/FabButton';
 import bookshelfCategories from '../constants/bookShelf';
 import BookshelfCategory from '../components/bookshelf/BookshelfCategory';
+import useBookStore from '../stores/book';
+import Book from '../components/bookshelf/Book';
 
 const BookshelfPage = styled.div`
+  width: 95%;
+  margin: 0px auto;
+
   header {
-    padding-top: 50px;
     font-size: 30px;
     font-weight: bold;
-  }
-
-  .title {
-    margin-left: 10px;
+    padding-top: 4rem;
   }
 
   ul {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    margin: 50px 10px 0px;
-    padding: 5px;
+    padding: 0px;
+    padding-top: 30px;
   }
 
   li {
@@ -31,6 +33,16 @@ const BookshelfPage = styled.div`
 function BookShelf() {
   const [selectedCategory, setSelectedCategory] = useState(
     bookshelfCategories[0],
+  );
+  const books = useBookStore(
+    useCallback(
+      state => {
+        return state.books.filter(
+          book => book.status === selectedCategory.status,
+        );
+      },
+      [selectedCategory],
+    ),
   );
 
   const selectCategory = category => {
@@ -43,7 +55,7 @@ function BookShelf() {
     <>
       <BookshelfPage>
         <header>
-          <p className="title">내 서재</p>
+          <p>내 서재</p>
         </header>
 
         <ul>
@@ -54,6 +66,12 @@ function BookShelf() {
               isSelected={selectedCategory.name === category.name}
               handleClick={selectCategory}
             />
+          ))}
+        </ul>
+
+        <ul>
+          {books.map(book => (
+            <Book key={book.id} book={book} />
           ))}
         </ul>
       </BookshelfPage>

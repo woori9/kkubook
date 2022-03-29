@@ -1,3 +1,4 @@
+import requests
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -55,3 +56,28 @@ def get_memo(request, book_id):
         memolist = Memo.objects.filter(book_id=book_id)
         serializer = MemoSerializer(memolist, many=True)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_naver_api(request):
+    '''
+    GET: 네이버 책 검색 api 결과를 가져온다.
+    TODO:
+        CLIENT_ID & CLIENT_SECRET 숨기기
+    '''
+    CLIENT_ID = 'Jyo29oClP9wTj1SDk8Bz'
+    CLIENT_SECRET = 'i0c7ntDiXt'
+    ISBN = request.data['isbn']
+    NAVER_BOOK_URL = f'https://openapi.naver.com/v1/search/book_adv.json?d_isbn={ISBN}'
+    data = requests.get(
+        NAVER_BOOK_URL,
+        headers = {
+            "X-Naver-Client-Id": CLIENT_ID,
+            "X-Naver-Client-Secret": CLIENT_SECRET,
+        }
+    ).json()
+    res = {
+        'link': data['items'][0]['link']
+    }
+    return Response(res)
+

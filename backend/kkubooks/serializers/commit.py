@@ -6,7 +6,7 @@ class CommitSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Commit
 		fields = '__all__'
-		read_only_fields = ('user_id', 'book_id', )
+		read_only_fields = ('user', 'book', )
 
 class CommitListSerializer(serializers.ModelSerializer):
 

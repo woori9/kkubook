@@ -6,7 +6,7 @@ const Button = styled.button(({ isSelected }) => [
     cursor: pointer;
     font-size: 15px;
     padding: 5px;
-    border-top: 1px solid gray;`,
+    border-top: 1px solid #a1a1a1;`,
 
   isSelected && tw`text-main-green border-main-green`,
 ]);
