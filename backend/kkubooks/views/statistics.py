@@ -25,7 +25,7 @@ def set_kkubookmode(request):
     # 꾸북모드 ON한 사용자 추가
     if request.method == 'POST':
         serializer = KkubookModeOnSerializer(data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -67,4 +67,3 @@ def get_user_statistics(request, yyyymm):
         }
         
         return JsonResponse(response_data, json_dumps_params={'ensure_ascii': False})
-    
