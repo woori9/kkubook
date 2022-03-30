@@ -1,4 +1,3 @@
-import json
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -11,10 +10,8 @@ from ..models import (
   Category
 )
 from ..serializers.kkubookmode import (
-    KkubookModeSerializer,
     KkubookModeOnSerializer
 )
-import datetime
 from django.db.models import Q
 from django.http import JsonResponse
 
@@ -57,7 +54,6 @@ def get_user_statistics(request, yyyymm):
         category = []
         for model_instance in books:
             main_category = Category.objects.get(book_id=model_instance.book_id).main
-            print('book : ', main_category)
             category.append(main_category)
 
         response_data = {
