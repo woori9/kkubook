@@ -6,11 +6,11 @@ const Body = styled.div`
   display: flex;
   flex-direction: column;
   align-items: left;
-  padding: 2vh;
+  padding: 1rem;
 `;
 
 const ListEle = styled.div`
-  padding: 2vh;
+  padding: 1rem;
 `;
 
 function SearchList() {

@@ -5,8 +5,8 @@ import useStore from '../../stores/book';
 import ProgressBar from '../common/ProgressBar';
 
 const BookContainer = styled.div`
-  background-color: beige;
   width: 100%;
+  padding: 5px;
 
   .title {
     overflow: hidden;
@@ -15,23 +15,59 @@ const BookContainer = styled.div`
   }
 
   .contents {
+    margin: 15px auto;
     display: flex;
+  }
 
-    .progress {
-      width: 100%;
-      margin-left: 1rem;
-      padding-top: 5rem;
-    }
+  .progress {
+    margin-top: auto;
+    margin-left: 10px;
+    width: 100%;
   }
 
   img {
-    width: 100px;
-    height: 140px;
+    width: 80px;
+    height: 120px;
+  }
+
+  .buttons {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    display: flex;
+    width: 100%;
+    border-radius: 0px 0px 30px 30px;
+    ${tw`bg-light-gray`}
+  }
+
+  button {
+    height: 30px;
+    border: none;
+    outline: none;
+    width: 100%;
+  }
+
+  .br-left-bottom {
+    border-radius: 0px 0px 0px 30px;
+  }
+
+  .br-right-bottom {
+    border-radius: 0px 0px 30px 0px;
+  }
+
+  .button-title {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .v-line {
+    border-left: 1px solid #d4d4d4;
   }
 `;
 
 function MainBook({ book }) {
-  const { id, title, author, image, startFrom, totalPage, page } = book;
+  const { id, title, author, image, startFrom, end, totalPage, page, status } =
+    book;
   const navigate = useNavigate();
   const updateOrder = useStore(state => state.updateOrder);
 
@@ -51,16 +87,61 @@ function MainBook({ book }) {
           </div>
         </div>
       </div>
-      <button
-        type="button"
-        onClick={() => {
-          updateOrder(id);
-          navigate(`reading/${id}`);
-        }}
-      >
-        책 읽기
-      </button>
-      <button type="button">메모 하기</button>
+      <div className="buttons">
+        <button
+          className="br-left-bottom"
+          type="button"
+          onClick={() => {
+            updateOrder(id);
+            navigate(`reading/${id}`);
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+            width={20}
+            height={20}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+            />
+          </svg>
+          <p className="button-title">책 읽기</p>
+        </button>
+        <button
+          className="br-right-bottom v-line"
+          type="button"
+          onClick={() =>
+            navigate('/creatememo', {
+              state: { id: `${id}`, title: `${title}` },
+            })
+          }
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+            width={20}
+            height={20}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+            />
+          </svg>
+          <p className="button-title">메모하기</p>
+        </button>
+      </div>
     </BookContainer>
   );
 }

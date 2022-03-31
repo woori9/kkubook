@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'twin.macro';
+import { apiSearchBook } from '../../api/main';
 
 const CamContainer = styled.div`
   width: 100%;
@@ -18,6 +19,21 @@ const CamContainer = styled.div`
 function ScanBook() {
   const navigate = useNavigate();
   const [findCode, setCode] = useState(null);
+
+  function searchIsbn() {
+    const reqData = {
+      word: `${findCode}`,
+      index: 2,
+    };
+    apiSearchBook(
+      reqData,
+      response => {
+        console(response.data.bookId);
+        navigate(`/bookDetail/${response.data}`);
+      },
+      error => console.log(error),
+    );
+  }
 
   const video = useRef(null);
   const canvas = useRef(null);
@@ -47,7 +63,6 @@ function ScanBook() {
             .detect(canvas.current)
             .then(([data]) => {
               if (data) {
-                console.log(data.rawValue);
                 clearInterval(detectBarcode);
                 setCode(data.rawValue);
               }
@@ -60,7 +75,7 @@ function ScanBook() {
 
   useEffect(() => {
     if (findCode) {
-      navigate(`/bookDetail/${findCode}`);
+      searchIsbn();
     } else {
       openCam();
     }

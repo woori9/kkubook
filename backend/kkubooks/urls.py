@@ -3,6 +3,7 @@ from .views import main
 from .views import bookshelf
 from .views import statistics
 from .views import memo
+from .views import survey
 
 urlpatterns = [
     path('main/kkubookmode/', main.kkubookmode),
@@ -27,4 +28,7 @@ urlpatterns = [
 
     path('mypage/kkubookmode/', statistics.set_kkubookmode),
     path('mypage/statistics/<str:yyyymm>/', statistics.get_user_statistics),
+
+    path('survey/', survey.create_survey),
+    path('survey/feeling/', survey.feeling),
 ]

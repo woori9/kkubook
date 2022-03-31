@@ -10,11 +10,11 @@ const MiddleText = styled.div`
   position: absolute;
   top: 50%;
   left: 0;
-  margin-top: 160px;
+  margin-top: 157px;
   line-height: 19px;
   text-align: center;
   font-size: 20px;
-  z-index: 99999999999;
+  z-index: 9;
 `;
 
 const GenreList = styled.ol`
@@ -39,37 +39,6 @@ const GenreListItem = styled.li`
   }
 `;
 
-const data = [
-  {
-    name: '경제경영',
-    count: 10,
-  },
-  {
-    name: '과학',
-    count: 2,
-  },
-  {
-    name: '자기계발',
-    count: 1,
-  },
-];
-
-const chartData = {
-  labels: data.map(genre => genre.name),
-  datasets: [
-    {
-      label: 'Genre Statistics',
-      data: data.map(genre => genre.count),
-      backgroundColor: [
-        'rgb(255, 99, 132)',
-        'rgb(54, 162, 235)',
-        'rgb(255, 205, 86)',
-      ],
-      hoverOffset: 4,
-    },
-  ],
-};
-
 const chartOptions = {
   cutout: '80%',
   plugins: {
@@ -88,10 +57,28 @@ const chartOptions = {
   },
 };
 
-function DoughnutChart() {
+function DoughnutChart({ data }) {
+  const chartData = {
+    // labels: data.map(genre => genre.name),
+    labels: ['경제경영', '과학', '자기계발'],
+    datasets: [
+      {
+        label: 'Genre Statistics',
+        // data: data.map(genre => genre.count),
+        data: [10, 2, 1],
+        backgroundColor: [
+          'rgb(255, 99, 132)',
+          'rgb(54, 162, 235)',
+          'rgb(255, 205, 86)',
+        ],
+        hoverOffset: 4,
+      },
+    ],
+  };
+
   return (
     <>
-      <MiddleText>3분야</MiddleText>
+      <MiddleText>{data.length}분야</MiddleText>
       <Doughnut data={chartData} options={chartOptions} />
       <GenreList>
         {data.map(genreItem => (

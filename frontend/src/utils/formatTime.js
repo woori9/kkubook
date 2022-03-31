@@ -1,5 +1,3 @@
-import React, { useState, useEffect } from 'react';
-
 function formatTime(time) {
   const hour = parseInt(time / 3600, 10);
   const min = parseInt((time % 3600) / 60, 10);
@@ -9,7 +7,9 @@ function formatTime(time) {
   const minString = min < 10 ? `0${min}` : min;
   const secString = sec < 10 ? `0${sec}` : sec;
 
-  return `${hourString} : ${minString} : ${secString}`;
+  return hour > 1
+    ? `${hourString} : ${minString} : ${secString}`
+    : `${minString} : ${secString}`;
 }
 
 export default formatTime;

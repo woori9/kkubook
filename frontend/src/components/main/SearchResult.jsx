@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 const BookContainer = styled.div`
   display: flex;
   height: 105px;
-  padding: 0px 2rem 0px 2rem;
-  margin: 1rem 0px 1rem 0px;
+  margin: 1rem;
+  cursor: pointer;
 
   img {
     width: 65px;
@@ -19,7 +19,7 @@ const BookContainer = styled.div`
     margin-top: 1rem;
     padding-left: 100px;
     background-color: #f2f2f2;
-    border-radius: 20px;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
   }

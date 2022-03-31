@@ -1,16 +1,18 @@
-from django.http import JsonResponse
 import requests
-from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
     HTTP_401_UNAUTHORIZED
 )
 from kkubooks.models import KkubookMode
 from .token import create_token, get_request_user
-from rest_framework.decorators import api_view
-
+from .serializers import UserSerializer
 
 
 User = get_user_model()
@@ -35,11 +37,13 @@ def login_signup(request):
     nickname = user_info['kakao_account']['profile']['nickname']
 
     # SignUp (DB)
+    is_new = False
     if not User.objects.filter(kakao_email=email).exists():
         User.objects.create(
             kakao_email = email,
             nickname = nickname
             )
+        is_new = True
     
     # Login
     user = get_object_or_404(User, kakao_email=email)
@@ -50,14 +54,14 @@ def login_signup(request):
         kkubook_days = level = KkubookMode.objects.filter(user_id=1).values()[0]['kkubook_days']
     else:
         level = kkubook_days = -1
-
+    
     payload = {'email': user.email}
 
     jwt_access_token = create_token(payload, 'access')
     # jwt_refresh_token = create_token(jwt_data, 'refresh')
 
     login_user = {
-        'user_id': user.pk,
+        'user': user.pk,
         'nickname': user.nickname,
         'is_kkubook': is_kkubook,
         'kkubook_complete': user.kkubook_complete,
@@ -65,21 +69,30 @@ def login_signup(request):
         'kkubook_days': kkubook_days,
         'created_at': user.created_at,
         'access_token': jwt_access_token,
+        'is_new': is_new,
     }
 
-    return JsonResponse(login_user)
+    return JsonResponse(login_user, status=HTTP_200_OK)
 
 
-@api_view(['DELETE'])
+@api_view(['DELETE', 'PUT'])
 def signout(request):
     '''
     DELETE: 사용자 정보 DB에서 삭제
     '''
+    # user = get_object_or_404(User, pk=5)
     user = get_request_user(request)
 
     if not user:
         return Response(status=HTTP_401_UNAUTHORIZED)
-        
-    user.delete()
+
+    if request.method == 'PUT':
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(request.data, status=HTTP_201_CREATED)
+
+    elif request.method == 'DELETE':
+        user.delete()
     return Response(data='정상적으로 삭제되었습니다.', status=HTTP_204_NO_CONTENT)
 

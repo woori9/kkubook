@@ -13,8 +13,7 @@ module.exports = {
         'main-red': '#FF5858',
       },
       padding: {
-        'page-top': '45px',
-        'page-x': '15px',
+        'page-x': '1rem',
       },
     },
   },

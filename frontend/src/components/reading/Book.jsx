@@ -5,7 +5,7 @@ const BookReading = styled.div`
   background-color: white;
   margin: 1rem auto;
   height: 14vh;
-  width: 90%;
+  width: 100%;
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.5);
   display: flex;

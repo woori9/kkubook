@@ -4,7 +4,7 @@ const Button = styled.button(({ isSelected }) => [
   `background: none;
     border: none;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     padding: 5px;
     border-top: 1px solid #a1a1a1;`,
 

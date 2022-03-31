@@ -1,12 +1,18 @@
 from rest_framework import serializers
 from ..models import Memo
+from .book import BookSearchSerializer
 
 
 class MemoListSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Memo
-		fields = '__all__'
+		fields = ('id', 'content', 'memo_img', 'memo_mark', 'created_at', 'updated_at',)
+		
+	def to_representation(self, instance):
+		response = super().to_representation(instance)
+		response['book_info'] = BookSearchSerializer(instance.book).data
+		return response
 
 
 class MemoSerializer(serializers.ModelSerializer):

@@ -5,7 +5,9 @@ import Svg from '../common/Svg';
 
 const ProfileBox = styled.div`
   ${tw`px-page-x pt-[4rem] pb-8`}
-  box-shadow: 0 15px 15px -15px rgb(0 0 0 / 0.1);
+  box-shadow: 0 15px 15px -15px rgb(0 0 0 / 0.4);
+  position: relative;
+  z-index: 2;
 `;
 
 const ProfileTitle = styled.div`
@@ -99,8 +101,7 @@ function Profile({ userInfo }) {
           </Svg>
         </button>
       </ProfileTitle>
-      {/* TODO: 아래 조건 not 떼기 */}
-      {!isKkubook ? (
+      {isKkubook ? (
         <>
           <strong>꾸북모드 시작한지 {level * 10 + kkubookDays}일째</strong>
           <ProgressBar

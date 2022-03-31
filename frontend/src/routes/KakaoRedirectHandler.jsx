@@ -60,6 +60,7 @@ function KakaoRedirectHandler() {
             kkubook_days,
             created_at,
             access_token,
+            is_new,
           } = res.data;
           console.log(res);
           apiInstance.defaults.headers.common.Authorization = `Bearer ${access_token}`;
@@ -69,6 +70,7 @@ function KakaoRedirectHandler() {
             isKkubook: is_kkubook,
             kkubookDays: kkubook_days,
             createdAt: created_at.split('T')[0],
+            isNew: is_new,
             nickname,
             level,
           });

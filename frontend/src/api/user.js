@@ -24,7 +24,25 @@ export function getUserInfo(accessToken, success, fail) {
     .catch(fail);
 }
 
+/* 닉네임 변경 */
+export function changeNickname(nickname, success, fail) {
+  apiInstance.put('accounts/', { nickname }).then(success).catch(fail);
+}
+
 /* 회원 탈퇴 */
 export function signout(success, fail) {
   apiInstance.delete('accounts/').then(success).catch(fail);
+}
+
+/* 꾸북모드 끄기 */
+export function offKkubookMode(success, fail) {
+  apiInstance.delete('kkubooks/mypage/kkubookmode/').then(success).catch(fail);
+}
+
+/* 독서량&장르 통계 가져오기 */
+export function getUserStatistics(date, success, fail) {
+  apiInstance
+    .get(`kkubooks/mypage/bookstatistics/${date}`)
+    .then(success)
+    .catch(fail);
 }

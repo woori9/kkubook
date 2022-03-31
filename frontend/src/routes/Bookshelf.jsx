@@ -10,7 +10,7 @@ import useBookshelfStore from '../stores/bookshelf';
 import Book from '../components/bookshelf/Book';
 
 const BookshelfPage = styled.div`
-  width: 95%;
+  padding: 0 1rem;
   margin: 0px auto;
 
   header {

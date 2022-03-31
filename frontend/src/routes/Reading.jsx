@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ReadingPage from '../components/reading/ReadingPage';
 import RecordPage from '../components/reading/RecordPage';
 import useBookStore from '../stores/book';
+import CreateMemo from '../components/memo/CreateMemo';
 
 const Page = styled.div`
   min-width: 100%;
   min-height: 100vh;
-  background-color: azure;
 
   button {
     border: 0;
@@ -17,7 +17,7 @@ const Page = styled.div`
 `;
 
 function Reading() {
-  const [isReadingPage, setIsReadingPage] = useState(true); // 읽는 중 vs 기록 중
+  const [currentPage, setIsCurrentPage] = useState('reading');
   const [isTimerActive, setIsTimerActive] = useState(true); // 읽는 중 vs 쉬는 중
   const [isTimeVisible, setIsTimeVisible] = useState(true);
   const [time, setTime] = useState(0);
@@ -56,8 +56,8 @@ function Reading() {
     };
   }, [isTimerActive]);
 
-  return isReadingPage ? (
-    <Page>
+  const getPage = {
+    reading: (
       <ReadingPage
         time={time}
         book={book}
@@ -65,14 +65,20 @@ function Reading() {
         setIsTimerActive={setIsTimerActive}
         isTimeVisible={isTimeVisible}
         setIsTimeVisible={setIsTimeVisible}
-        setIsReadingPage={setIsReadingPage}
+        setIsCurrentPage={setIsCurrentPage}
       />
-    </Page>
-  ) : (
-    <Page>
-      <RecordPage time={time} setIsReadingPage={setIsReadingPage} />
-    </Page>
-  );
+    ),
+    record: <RecordPage time={time} setIsCurrentPage={setIsCurrentPage} />,
+    memo: (
+      <CreateMemo
+        id={bookId}
+        title={book.title}
+        backClickHandler={useCallback(() => setIsCurrentPage('reading'), [])}
+      />
+    ),
+  };
+
+  return <Page>{getPage[currentPage]}</Page>;
 }
 
 export default Reading;

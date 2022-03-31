@@ -1,6 +1,6 @@
 import tw, { styled } from 'twin.macro';
+import { useNavigate } from 'react-router-dom';
 import useStore from '../../stores/bottomSheet';
-import worryingKkubook from '../../assets/worrying-kkubook.png';
 
 const WarningSheet = styled.div`
   width: 80%;
@@ -13,8 +13,8 @@ const WarningSheet = styled.div`
   }
 
   .message {
-    margin-bottom: 3rem;
-    font-size: 13px;
+    font-size: 16px;
+    padding: 20px 0px;
   }
 
   .button-group {
@@ -43,32 +43,35 @@ const WarningSheet = styled.div`
   }
 `;
 
-function Warning() {
-  const hideBottomSheet = useStore(state => state.onDismiss);
-  const setIsCurrentPage = useStore(state => state.onSubmit);
+const getTextByStatus = {
+  2: '서재에서 책이 삭제되며 삭제한 내용은 복구되지 않습니다.',
+  3: '서재에서 책이 삭제되며 독서 기록도 함께 삭제됩니다. 삭제한 내용은 복구되지 않습니다.',
+};
 
-  const stopReading = () => {
-    hideBottomSheet();
-    setIsCurrentPage('record');
-  };
+function Warning({ status }) {
+  const hideBottomSheet = useStore(state => state.onDismiss);
+  const deleteBook = useStore(state => state.onSubmit);
+  const navigate = useNavigate();
 
   return (
     <WarningSheet>
-      <img
-        className="kkubook-img"
-        src={worryingKkubook}
-        alt="worrying-kkubook"
-      />
       <div className="message">
-        <p>2분 동안 책을 읽어보세요</p>
-        <p>그래도 읽기 힘들다면 새로운 책을 추천해 드릴게요</p>
+        <p>{getTextByStatus[status]}</p>
       </div>
       <div className="button-group">
-        <button className="stop" type="button" onClick={stopReading}>
-          그만 읽기
+        <button
+          className="stop"
+          type="button"
+          onClick={() => {
+            hideBottomSheet();
+            deleteBook();
+            navigate(-1);
+          }}
+        >
+          책 삭제하기
         </button>
         <button className="back" type="button" onClick={hideBottomSheet}>
-          돌아가기
+          취소
         </button>
       </div>
     </WarningSheet>

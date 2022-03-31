@@ -9,6 +9,10 @@ const useStore = create((set, get) => ({
     const restBooks = bookLists.filter(book => book.id !== bookId);
     return set({ books: [targetBook, ...restBooks] });
   },
+  deleteBook: bookId => {
+    const bookList = get().books;
+    return set({ books: bookList.filter(book => book.id !== bookId) });
+  },
 }));
 
 export default useStore;

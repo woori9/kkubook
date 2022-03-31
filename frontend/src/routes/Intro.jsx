@@ -3,8 +3,12 @@ import happyKkubook from '../assets/happy-kkubook.png';
 import kakaologin from '../assets/kakaologin.png';
 
 const Page = styled.div`
-  ${tw`flex flex-col items-center`}
+  ${tw`flex flex-col justify-evenly items-center`}
   height: 100vh;
+
+  .img-title {
+    text-align: center;
+  }
 `;
 
 const Img = styled.img`
@@ -19,8 +23,10 @@ const KAKAO_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.e
 function Intro() {
   return (
     <Page>
-      <Img src={happyKkubook} alt="Kkubook character" />
-      <h1>꾸북</h1>
+      <div className="img-title">
+        <Img src={happyKkubook} alt="Kkubook character" />
+        <h1>꾸북</h1>
+      </div>
       <a href={KAKAO_URL}>
         <img src={kakaologin} alt="kakao login" />
       </a>

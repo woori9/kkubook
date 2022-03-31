@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import tw, { styled } from 'twin.macro';
 import { months, days } from '../../utils/days';
 import Svg from '../common/Svg';
 import DoughnutChart from './DoughnutChart';
+import { getUserStatistics } from '../../api/user';
 
 const StatisticBox = styled.div`
   ${tw`px-page-x`}
   background: none;
+  margin-bottom: 65px;
 
   &:before {
     content: '';
@@ -82,10 +84,15 @@ const lastYearMonth =
 
 function Statistics({ createdAt }) {
   // TODO: get~Month 함수 호출 때 api 요청
-  const [year, setYear] = React.useState(thisYear);
-  const [monthIdx, setMonthIdx] = React.useState(thisMonth - 1);
+  const [year, setYear] = useState(thisYear);
+  const [monthIdx, setMonthIdx] = useState(thisMonth - 1);
+  const [userStatistics, setUserStatistics] = useState({});
+
   // 가장 첫 달(=유저가 db에 created 된 날)
-  const firstYearMonth = createdAt.split('-').slice(0, 2).join('');
+  const firstYearMonth =
+    createdAt && createdAt.length > 0
+      ? createdAt.split('-').slice(0, 2).join('')
+      : '';
 
   // 현재 통계를 보고 있는 달
   let currentYearMonth =
@@ -94,12 +101,19 @@ function Statistics({ createdAt }) {
       ? `0${months[monthIdx]}`
       : months[monthIdx].toString());
 
-  React.useEffect(() => {
+  useEffect(() => {
     currentYearMonth =
       year.toString() +
       (months[monthIdx] < 10
         ? `0${months[monthIdx]}`
         : months[monthIdx].toString());
+    getUserStatistics(
+      currentYearMonth,
+      response => {
+        setUserStatistics(response.data);
+      },
+      error => console.log(error),
+    );
   }, [monthIdx]);
 
   function getPrevMonth() {
@@ -154,7 +168,7 @@ function Statistics({ createdAt }) {
           <div className="desc-data">
             <dt>책</dt>
             <dd>
-              <strong>4</strong>권
+              <strong>{userStatistics.book_num}</strong>권
             </dd>
           </div>
         </Box>
@@ -170,14 +184,17 @@ function Statistics({ createdAt }) {
           <div className="desc-data">
             <dt>독서일</dt>
             <dd>
-              <strong>6</strong>일 / <strong>{days[monthIdx]}</strong>일
+              <strong>{userStatistics.commit_num}</strong>일 /{' '}
+              <strong>{days[monthIdx]}</strong>일
             </dd>
           </div>
         </Box>
       </Dl>
-      <Box>
-        <DoughnutChart />
-      </Box>
+      {userStatistics.category && userStatistics.category.length > 0 && (
+        <Box>
+          <DoughnutChart data={userStatistics.category} />
+        </Box>
+      )}
     </StatisticBox>
   );
 }

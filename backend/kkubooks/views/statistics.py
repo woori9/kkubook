@@ -1,4 +1,3 @@
-from operator import mod
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -32,7 +31,6 @@ def set_kkubookmode(request):
         user = get_object_or_404(KkubookMode, user_id=1)
         user.delete()
         return Response(data='정상적으로 삭제되었습니다.', status=status.HTTP_204_NO_CONTENT)
-
 
 @api_view(['GET'])
 def get_user_statistics(request, yyyymm):

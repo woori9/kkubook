@@ -24,9 +24,10 @@ code {
   height: 100%;
   min-width: 360px;
   max-width: 500px;
-  padding-top: 52px;
+  min-height: 100vh;
+  /* padding-top: 52px; */
   /* TODO: navbar가 들어가는 페이지에서만 따로 선언하기 */
-  padding-bottom: 62px;
+  /* padding-bottom: 62px; */
   background-color: #fff;
   margin: 0 auto;
 }

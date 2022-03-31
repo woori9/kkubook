@@ -4,6 +4,7 @@ import GoBackBar from '../components/common/GoBackBar';
 import Navbar from '../components/common/Navbar';
 import { signout } from '../api/user';
 import useStore from '../stores/user';
+import apiInstance from '../utils/apiInstance';
 
 const Div = styled.div`
   ${tw`flex flex-col justify-center items-center`}
@@ -38,14 +39,14 @@ const Div = styled.div`
 `;
 
 function Signout() {
-  const setUserInfo = useStore(state => state.setUserInfo);
+  const deleteUserInfo = useStore(state => state.deleteUserInfo);
   const navigate = useNavigate();
 
   function clickBtn() {
     signout(
       response => {
-        console.log(response);
-        setUserInfo({});
+        deleteUserInfo();
+        apiInstance.defaults.headers.common.Authorization = '';
         navigate('/intro');
       },
       error => {

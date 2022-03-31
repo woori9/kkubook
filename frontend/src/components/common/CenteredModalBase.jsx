@@ -8,7 +8,7 @@ const ModalBackdrop = styled.div`
   width: 100%;
   max-width: 500px;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.5);
 
   ${props =>
     props.open &&

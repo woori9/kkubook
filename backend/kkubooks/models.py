@@ -55,9 +55,6 @@ class Commit(models.Model):
 class Bookshelf(models.Model):
     '''
     book_status: 0-읽은책/1-읽는중/2-읽고싶은/3-중단
-    rating
-        1(읽는중): 0 으로 변경
-        0(완독): 평점 받기
     '''
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.PROTECT)
@@ -65,20 +62,21 @@ class Bookshelf(models.Model):
     curr_page = models.IntegerField(default=0)
     start_date = models.DateField(null=True,blank=True)
     end_date = models.DateField(null=True,blank=True)
-    rating = models.IntegerField(default=5)
+    rating = models.IntegerField(default=0)
 
 
 class Survey(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    age = models.IntegerField()
     feeling = models.IntegerField()
+    interest = models.CharField(max_length=100)
     category = models.IntegerField()
     amount = models.IntegerField()
     job = models.IntegerField()
 
-
-class Interest(models.Model):
-    survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
-    keyword = models.CharField(max_length=30)
+# class Interest(models.Model):
+#     survey = models.ForeignKey(Survey, on_delete=models.CASCADE)
+#     keyword = models.CharField(max_length=30)
 
 
 class Category(models.Model):

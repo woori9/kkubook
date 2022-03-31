@@ -59,7 +59,12 @@ function Navbar() {
       <Ul>
         {links.map(link => (
           <li key={link.path}>
-            <StyledLink to={link.path} selected={pathname === link.path}>
+            <StyledLink
+              to={link.path}
+              selected={
+                `/${pathname.split('/')[1]}` === `/${link.path.split('/')[1]}`
+              }
+            >
               <Svg stroke="currentColor">
                 <path
                   strokeLinecap="round"

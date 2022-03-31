@@ -4,8 +4,10 @@ const StyledFooter = styled.footer`
   position: fixed;
   max-width: 500px;
   width: 100%;
-  background-color: beige;
+  background-color: white;
   bottom: 0px;
+  text-align: center;
+  padding: 20px 0px;
 `;
 
 function Footer({ children }) {

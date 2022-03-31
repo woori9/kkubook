@@ -11,7 +11,6 @@ const Bar = styled.div`
   display: flex;
   background-color: white;
   z-index: 3;
-
   p {
     align-self: center;
     font-size: 17px;
