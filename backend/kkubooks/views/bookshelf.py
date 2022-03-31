@@ -10,11 +10,16 @@ from ..models import (
 )
 from ..serializers.bookshelf import BookshelfSerializer
 from ..serializers.memo import MemoListSerializer
+from accounts.token import get_request_user
 import datetime
 
 @api_view(['POST'])
 def create_book(request):
     # 서재에 책을 등록한다.
+    user = get_request_user(request)
+    if not user:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
     if request.method == 'POST':
         serializer = BookshelfSerializer(data=request.data)
         if serializer.is_valid(): # 유효한 값이 들어가는지 검사
@@ -24,6 +29,10 @@ def create_book(request):
 
 @api_view(['PUT', 'DELETE'])
 def bookshelf_detail(request, bookshelf_id):
+
+    user = get_request_user(request)
+    if not user:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     book = get_object_or_404(Bookshelf, pk=bookshelf_id)
 
@@ -42,6 +51,11 @@ def bookshelf_detail(request, bookshelf_id):
 
 @api_view(['GET'])
 def bookshelf_list(request):
+
+    user = get_request_user(request)
+    if not user:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
     # 서재에 저장된 책 목록을 가져온다.
     if request.method == 'GET':
         bookshelf = Bookshelf.objects.all()
@@ -50,6 +64,11 @@ def bookshelf_list(request):
 
 @api_view(['GET'])
 def get_memo(request, book_id):
+
+    user = get_request_user(request)
+    if not user:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
     # 선택한 책의 메모를 가져온다.
     if request.method == 'GET':
         memolist = Memo.objects.filter(book_id=book_id)
@@ -64,9 +83,14 @@ def get_naver_api(request):
     TODO:
         CLIENT_ID & CLIENT_SECRET 숨기기
     '''
+
+    user = get_request_user(request)
+    if not user:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
     CLIENT_ID = 'Jyo29oClP9wTj1SDk8Bz'
     CLIENT_SECRET = 'i0c7ntDiXt'
-    ISBN = request.data['isbn']
+    ISBN = request.query_params['isbn']
     NAVER_BOOK_URL = f'https://openapi.naver.com/v1/search/book_adv.json?d_isbn={ISBN}'
     data = requests.get(
         NAVER_BOOK_URL,
