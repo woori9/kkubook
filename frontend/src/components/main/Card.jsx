@@ -1,5 +1,10 @@
 import styled from 'styled-components';
 
+const CardWrapper = styled.div`
+  background-color: transparent;
+  padding: 0 0.5rem;
+`;
+
 const StyledCard = styled.div`
   position: relative;
   border-radius: 30px;
@@ -15,7 +20,11 @@ const StyledCard = styled.div`
 `;
 
 function Card({ children }) {
-  return <StyledCard>{children}</StyledCard>;
+  return (
+    <CardWrapper>
+      <StyledCard>{children}</StyledCard>
+    </CardWrapper>
+  );
 }
 
 export default Card;

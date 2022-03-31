@@ -13,20 +13,23 @@ import useBottomSheetStore from '../stores/bottomSheet';
 
 const settings = {
   dots: false,
-  infinite: true,
+  infinite: false,
   speed: 500,
   slidesToShow: 1,
   slidesToScroll: 1,
   draggable: true,
   arrows: false,
+  initialSlide: 1,
+  centerMode: true,
+  centerPadding: '4%',
 };
 
-const StyledBox = styled.div`
+const GreenHeader = styled.header`
   ${tw`bg-main-green`}
   width: 100%;
   max-width: 500px;
   height: 30vh;
-  position: fixed;
+  position: absolute;
 
   .logo {
     width: 100px;
@@ -35,16 +38,25 @@ const StyledBox = styled.div`
     text-align: center;
     background-color: white;
   }
-`;
 
-const StyledMain = styled.div`
-  padding: 0 1rem;
-  position: relative;
-  top: 15vh;
+  .wrapper {
+    padding: 0 1rem;
+    position: relative;
+    top: 10vh;
+  }
 
   .text-white {
     color: white;
     font-size: 20px;
+  }
+`;
+
+const StyledContent = styled.div`
+  position: relative;
+  top: 17vh;
+
+  .content-wrapper {
+    padding: 0 1rem;
   }
 `;
 
@@ -53,23 +65,34 @@ function Main() {
     useCallback(state => {
       return state.books.filter(book => book.status === 1);
     }),
-    [],
   );
   const openBottomSheet = useBottomSheetStore(
     useCallback(state => state.openSheet),
   );
 
+  // slider에는 padding이 들어가면 안된다.
+  // slider를 감싼 요소가 fix면 slider css가 깨져서 greenHeader를 absolute로 설정
   return (
     <>
       <Navbar />
       <FabButton />
-      <StyledBox>
+      <GreenHeader>
         <div className="logo"> Logo 위치 </div>
-      </StyledBox>
-      <StyledMain>
-        <p className="text-white">읽고 있는 책</p>
+        <div className="wrapper">
+          <p className="text-white">읽고 있는 책</p>
+        </div>
+      </GreenHeader>
+      <StyledContent>
         {books.length ? (
           <Slider {...settings}>
+            <Card>
+              <button
+                type="button"
+                onClick={() => openBottomSheet(SearchList, '책 등록하기')}
+              >
+                책 추가하기
+              </button>
+            </Card>
             {books.map(book => (
               <Card key={book.id}>
                 <MainBook book={book} />
@@ -86,14 +109,10 @@ function Main() {
             </button>
           </Card>
         )}
-        <BookCommit />
-        <button
-          type="button"
-          onClick={() => openBottomSheet(SearchList, '책 등록하기')}
-        >
-          책 추가하기
-        </button>
-      </StyledMain>
+        <div className="content-wrapper">
+          <BookCommit />
+        </div>
+      </StyledContent>
     </>
   );
 }
