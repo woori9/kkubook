@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from ..models import (
+  Book,
   KkubookMode,
   Commit,
   Category
@@ -59,8 +60,12 @@ def get_user_statistics(request, yyyymm):
         # 장르 통계
         # Commit table에서 yyyy년 mm월에 읽은 책의 장르 종류, 장르별 책 수
         category = {}
+        book_img = []
         for model_instance in books:
-            main_category = Category.objects.get(book_id=model_instance.get('book_id')).main
+            book_id = model_instance.get('book_id')
+            main_category = Category.objects.get(book_id=book_id).main
+            book_img.append(Book.objects.get(id=book_id).img_url)
+
             if main_category in category.keys():
                 category[main_category] += 1
             else:
@@ -69,7 +74,8 @@ def get_user_statistics(request, yyyymm):
         response_data = {
             "commit_num" : commit_num,
             "book_num" : book_num,
-            "category" : category
+            "category" : category,
+            "book_img" : book_img
         }
         
         return JsonResponse(response_data, json_dumps_params={'ensure_ascii': False})

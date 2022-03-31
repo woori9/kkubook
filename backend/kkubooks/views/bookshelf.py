@@ -13,8 +13,11 @@ from ..serializers.memo import MemoListSerializer
 from accounts.token import get_request_user
 import datetime
 
+User = get_user_model()
+
 @api_view(['POST'])
 def create_book(request):
+    
     # 서재에 책을 등록한다.
     user = get_request_user(request)
     if not user:
@@ -83,7 +86,6 @@ def get_naver_api(request):
     TODO:
         CLIENT_ID & CLIENT_SECRET 숨기기
     '''
-
     user = get_request_user(request)
     if not user:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
