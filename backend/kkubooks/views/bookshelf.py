@@ -5,12 +5,11 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from ..models import (
-  Book,
   Bookshelf,
   Memo
 )
 from ..serializers.bookshelf import BookshelfSerializer
-from ..serializers.memo import MemoSerializer
+from ..serializers.memo import MemoListSerializer
 import datetime
 
 @api_view(['POST'])
@@ -54,7 +53,7 @@ def get_memo(request, book_id):
     # 선택한 책의 메모를 가져온다.
     if request.method == 'GET':
         memolist = Memo.objects.filter(book_id=book_id)
-        serializer = MemoSerializer(memolist, many=True)
+        serializer = MemoListSerializer(memolist, many=True)
         return Response(serializer.data)
 
 
