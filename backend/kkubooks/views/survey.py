@@ -32,7 +32,7 @@ def create_survey(request):
         serializer = SurveySerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=user)
-            return Response(serializer.data, status=HTTP_201_CREATED)
+            return Response(status=HTTP_201_CREATED)
 
 
 @api_view(['PUT'])
