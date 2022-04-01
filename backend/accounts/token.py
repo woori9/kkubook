@@ -36,5 +36,3 @@ def get_request_user(request):
         return False
     except User.DoesNotExist:
         return False
-
-

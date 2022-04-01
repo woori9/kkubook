@@ -35,11 +35,11 @@ def login_signup(request):
     
     email = user_info['kakao_account']['email']
     nickname = user_info['kakao_account']['profile']['nickname']
-
     # SignUp (DB)
     is_new = False
     if not User.objects.filter(kakao_email=email).exists():
         User.objects.create(
+            username = email,
             kakao_email = email,
             nickname = nickname
             )
@@ -50,8 +50,8 @@ def login_signup(request):
 
     is_kkubook = KkubookMode.objects.filter(user_id=user.pk).exists()
     if is_kkubook:
-        level = KkubookMode.objects.filter(user_id=1).values()[0]['level']
-        kkubook_days = level = KkubookMode.objects.filter(user_id=1).values()[0]['kkubook_days']
+        level = KkubookMode.objects.filter(user_id=user.pk).values()[0]['level']
+        kkubook_days = level = KkubookMode.objects.filter(user_id=user.pk).values()[0]['kkubook_days']
     else:
         level = kkubook_days = -1
     

@@ -60,3 +60,18 @@ def keyword_crawling(book_isbn):
 # print(category_crawling(isbn))
 # isbn2 = '9791168120846'
 # print(category_crawling(isbn2))
+
+
+def score_crawling(book_isbn):
+    '''
+    평점 가져오기
+    '''
+    res = requests.get(f'{KYOBO_URL}?barcode={book_isbn}', timeout=3)
+    soup = BeautifulSoup(res.content, 'html.parser')
+
+    score_tmp = soup.select_one('div.review')
+    score = score_tmp.select_one('em').get_text()
+    return score
+
+isbn = '9791158362836'
+print(score_crawling(isbn))

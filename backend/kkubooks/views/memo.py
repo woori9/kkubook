@@ -49,7 +49,6 @@ def create_memo(request):
         book = get_object_or_404(Book, pk=request.data['book_id'])
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=user, book=book)
-            # serializer.save(user_id=1)
             return Response(serializer.data, status=HTTP_201_CREATED)
 
 

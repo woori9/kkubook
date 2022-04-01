@@ -7,10 +7,10 @@ from django.utils import timezone
 
 class Book(models.Model):
     isbn = models.CharField(max_length=30)
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=255)
     description = models.TextField()
-    author = models.CharField(max_length=30)
-    publisher = models.CharField(max_length=30)
+    author = models.CharField(max_length=100)
+    publisher = models.CharField(max_length=100)
     img_url = models.CharField(max_length=255)
     page = models.IntegerField()
 
@@ -83,6 +83,7 @@ class Category(models.Model):
     book = models.OneToOneField(Book, on_delete=models.CASCADE)
     main = models.CharField(max_length=50)
     sub = models.CharField(max_length=50)
+    third = models.CharField(max_length=50)
     survey_category = models.IntegerField()
 
 

@@ -5,6 +5,7 @@ from django.shortcuts import (
 from rest_framework.decorators import api_view
 from rest_framework.status import (
     HTTP_201_CREATED,
+    HTTP_401_UNAUTHORIZED,
 )
 from rest_framework.response import Response
 
@@ -24,20 +25,26 @@ from ..serializers.commit import (
 )
 from ..serializers.bookshelf import (
     BookshelfRatingSerializer,
-    BookshelfCurrpageSerializer,
+    # BookshelfCurrpageSerializer,
 )
 from ..serializers.kkubookmode import KkubookModeSerializer
+from accounts.token import get_request_user
+
 
 User = get_user_model()
-
 
 @api_view(['GET'])
 def kkubookmode(request):
     '''
     GET: 유저의 꾸북모드 정보를 받아온다.
     '''
+    user = get_request_user(request)
+
+    if not user:
+        return Response(status=HTTP_401_UNAUTHORIZED)
+
     if request.method == 'GET':
-        kkubookmode_id = KkubookMode.objects.filter(user_id=1)
+        kkubookmode_id = KkubookMode.objects.filter(user_id=user.pk)
         kkubookmode = get_object_or_404(KkubookMode, pk=kkubookmode_id.values()[0]['id'])
         serializer = KkubookModeSerializer(kkubookmode)
         return Response(serializer.data)
@@ -70,8 +77,13 @@ def booklist(request):
     '''
     GET: 읽고 있는 책의 상세 정보를 가져온다.
     '''
+    user = get_request_user(request)
+
+    if not user:
+        return Response(status=HTTP_401_UNAUTHORIZED)
+
     if request.method == 'GET':
-        book_id_list = Bookshelf.objects.filter(book_status=1).filter(user_id=1).values('book_id')
+        book_id_list = Bookshelf.objects.filter(book_status=1).filter(user_id=user.pk).values('book_id')
         books = []
         for id in book_id_list:
             book = get_object_or_404(Book, pk=id['book_id'])
@@ -96,26 +108,31 @@ def commit(request, book_id):
     '''
     POST: commit 생성
     '''
+    user = get_request_user(request)
+
+    if not user:
+        return Response(status=HTTP_401_UNAUTHORIZED)
+
     if request.method == 'POST':
         serializer = CommitSerializer(data=request.data)
-        user = User.objects.get(pk=request.data['user'])
+        user = User.objects.get(pk=user.pk)
         book = Book.objects.get(pk=book_id)
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=user, book=book)
             return Response(serializer.data, status=HTTP_201_CREATED)
 
 
-@api_view(['PUT'])
-def page(request, bookshelf_id):
-    '''
-    PUT: 현재 페이지 수를 수정한다.
-    '''
-    if request.method == 'PUT':
-        bookshelf = get_object_or_404(Bookshelf, pk=bookshelf_id)
-        serializer = BookshelfCurrpageSerializer(instance=bookshelf, data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
+# @api_view(['PUT'])
+# def page(request, bookshelf_id):
+#     '''
+#     PUT: 현재 페이지 수를 수정한다.
+#     '''
+#     if request.method == 'PUT':
+#         bookshelf = get_object_or_404(Bookshelf, pk=bookshelf_id)
+#         serializer = BookshelfCurrpageSerializer(instance=bookshelf, data=request.data)
+#         if serializer.is_valid(raise_exception=True):
+#             serializer.save()
+#             return Response(serializer.data)
 
 
 @api_view(['GET'])
@@ -123,8 +140,13 @@ def commit_list(request):
     '''
     GET: commit 기록 모두 조회
     '''
+    user = get_request_user(request)
+
+    if not user:
+        return Response(status=HTTP_401_UNAUTHORIZED)
+
     if request.method == 'GET':
-        commit_list = Commit.objects.filter(user_id=1)
+        commit_list = Commit.objects.filter(user_id=user.pk)
         serializer = CommitListSerializer(commit_list, many=True)
         return Response(serializer.data)
 
@@ -134,6 +156,11 @@ def rating(request, bookshelf_id):
     '''
     PUT: 다 읽은 책의 평점 등록하기
     '''
+    user = get_request_user(request)
+
+    if not user:
+        return Response(status=HTTP_401_UNAUTHORIZED)
+        
     bookshelf = get_object_or_404(Bookshelf, pk=bookshelf_id)
     if request.method == 'PUT':
       serializer = BookshelfRatingSerializer(instance=bookshelf, data=request.data)
