@@ -17,7 +17,7 @@ const Img = styled.img`
   height: auto;
 `;
 
-const REDIRECT_URI = 'http://localhost:3000/oauth/callback/kakao';
+const REDIRECT_URI = 'http://j6b204.p.ssafy.io/oauth/callback/kakao';
 const KAKAO_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
 
 function Intro() {

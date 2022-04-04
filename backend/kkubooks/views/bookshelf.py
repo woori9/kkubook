@@ -15,6 +15,7 @@ from ..serializers.bookshelf import (
 from ..serializers.memo import MemoListSerializer
 from accounts.token import get_request_user
 import datetime
+from backend.settings import get_secret
 
 User = get_user_model()
 
@@ -93,8 +94,8 @@ def get_naver_api(request):
     if not user:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-    CLIENT_ID = 'Jyo29oClP9wTj1SDk8Bz'
-    CLIENT_SECRET = 'i0c7ntDiXt'
+    CLIENT_ID = get_secret("CLIENT_ID")
+    CLIENT_SECRET = get_secret("CLIENT_SECRET")
     ISBN = request.query_params['isbn']
     NAVER_BOOK_URL = f'https://openapi.naver.com/v1/search/book_adv.json?d_isbn={ISBN}'
     data = requests.get(
