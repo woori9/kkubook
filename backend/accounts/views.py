@@ -34,6 +34,7 @@ def login_signup(request):
         ).json()
     
     email = user_info['kakao_account']['email']
+
     nickname = user_info['kakao_account']['profile']['nickname']
     # SignUp (DB)
     is_new = False
@@ -55,7 +56,7 @@ def login_signup(request):
     else:
         level = kkubook_days = -1
     
-    payload = {'email': user.email}
+    payload = {'email': user.kakao_email}
 
     jwt_access_token = create_token(payload, 'access')
     # jwt_refresh_token = create_token(jwt_data, 'refresh')
