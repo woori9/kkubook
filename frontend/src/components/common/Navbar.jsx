@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import tw, { styled } from 'twin.macro';
+import tw, { styled, css } from 'twin.macro';
 import Svg from './Svg';
 
 const Nav = styled.nav`
@@ -12,6 +12,24 @@ const Nav = styled.nav`
 
 const Ul = styled.ul`
   ${tw`flex justify-around h-full pl-0 list-none`}
+`;
+
+const Li = styled.li`
+  .dot-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  ${props =>
+    props.selected &&
+    css`
+      .dot-wrapper:before {
+        content: '•';
+        display: block;
+        position: absolute;
+        color: #61b864;
+        top: -0.2rem;
+      }
+    `}
 `;
 
 const StyledLink = styled(Link)`
@@ -58,7 +76,13 @@ function Navbar() {
     <Nav>
       <Ul>
         {links.map(link => (
-          <li key={link.path}>
+          <Li
+            key={link.path}
+            selected={
+              `/${pathname.split('/')[1]}` === `/${link.path.split('/')[1]}`
+            }
+          >
+            <div className="dot-wrapper" />
             <StyledLink
               to={link.path}
               selected={
@@ -75,7 +99,7 @@ function Navbar() {
               </Svg>
               {link.name}
             </StyledLink>
-          </li>
+          </Li>
         ))}
       </Ul>
     </Nav>

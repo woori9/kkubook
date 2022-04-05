@@ -15,3 +15,13 @@ export function submitFeeling(feeling, success, fail) {
     .then(success)
     .catch(fail);
 }
+
+/* 기분 정보 불러오기 */
+export async function getFeeling() {
+  try {
+    const response = await apiInstance.get('kkubooks/survey/feeling/');
+    return response.data.feeling;
+  } catch (error) {
+    return error;
+  }
+}

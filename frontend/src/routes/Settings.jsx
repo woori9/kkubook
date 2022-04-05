@@ -52,6 +52,7 @@ const Ul = styled.ul`
   .non-styled-btn {
     width: 100%;
     text-align: left;
+    color: #000;
     font-size: 16px;
     font-family: [ 'NanumSquare', sans-serif];
     border: 0;

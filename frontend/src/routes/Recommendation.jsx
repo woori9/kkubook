@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from 'twin.macro';
 import Navbar from '../components/common/Navbar';
 import FabButton from '../components/common/FabButton';
+import SelectEmotion from '../components/recommendation/SelectEmotion';
 import BookResult from '../components/recommendation/BookResult';
 import books from '../data/books';
 import { getUserBooks, getBestBooks } from '../api/recommend';
@@ -83,6 +84,7 @@ function Recommendation() {
             />
           </svg>
         </Header>
+        <SelectEmotion />
         <Categories>
           <div className="category">
             <p>테스트</p>

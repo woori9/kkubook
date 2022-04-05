@@ -26,6 +26,7 @@ const ProfileTitle = styled.div`
   .setting-btn {
     border: none;
     background-color: transparent;
+    color: #000;
     cursor: pointer;
   }
 `;

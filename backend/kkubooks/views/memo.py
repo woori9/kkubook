@@ -29,7 +29,7 @@ def memo_list(request):
         return Response(status=HTTP_401_UNAUTHORIZED)
 
     if request.method == 'GET':
-        memos = Memo.objects.filter(user_id=user.pk)
+        memos = Memo.objects.filter(user_id=user.pk).order_by('-pk')
         serializer = MemoListSerializer(memos, many=True)
         return Response(serializer.data)
 
@@ -46,7 +46,7 @@ def create_memo(request):
     if request.method == 'POST':
         serializer = MemoSerializer(data=request.data)
         # user = get_object_or_404(User, pk=4)
-        book = get_object_or_404(Book, pk=request.data['book_id'])
+        book = get_object_or_404(Book, pk=request.data['book'])
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=user, book=book)
             return Response(serializer.data, status=HTTP_201_CREATED)

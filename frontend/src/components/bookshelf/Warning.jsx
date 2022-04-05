@@ -41,11 +41,16 @@ const WarningSheet = styled.div`
   .back {
     ${tw`bg-light-gray`}
   }
+
+  .pre-wrap {
+    white-space: pre-wrap;
+  }
 `;
 
 const getTextByStatus = {
-  2: '서재에서 책이 삭제되며 삭제한 내용은 복구되지 않습니다.',
-  3: '서재에서 책이 삭제되며 독서 기록도 함께 삭제됩니다. 삭제한 내용은 복구되지 않습니다.',
+  2: '서재에서 책이 삭제되며 \n 삭제한 내용은 복구되지 않습니다.',
+  3: `서재에서 책이 삭제되며 \n 독서 기록도 함께 삭제됩니다.
+  삭제한 내용은 복구되지 않습니다.`,
 };
 
 function Warning({ status }) {
@@ -56,7 +61,7 @@ function Warning({ status }) {
   return (
     <WarningSheet>
       <div className="message">
-        <p>{getTextByStatus[status]}</p>
+        <p className="pre-wrap">{getTextByStatus[status]}</p>
       </div>
       <div className="button-group">
         <button
@@ -65,7 +70,7 @@ function Warning({ status }) {
           onClick={() => {
             hideBottomSheet();
             deleteBook();
-            navigate(-1);
+            navigate('/bookshelf');
           }}
         >
           책 삭제하기

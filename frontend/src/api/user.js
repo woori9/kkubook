@@ -34,6 +34,11 @@ export function signout(success, fail) {
   apiInstance.delete('accounts/').then(success).catch(fail);
 }
 
+/* 꾸북모드 켜기 */
+export function onKkubookMode(success, fail) {
+  apiInstance.post('kkubooks/mypage/kkubookmode/').then(success).catch(fail);
+}
+
 /* 꾸북모드 끄기 */
 export function offKkubookMode(success, fail) {
   apiInstance.delete('kkubooks/mypage/kkubookmode/').then(success).catch(fail);
@@ -42,7 +47,7 @@ export function offKkubookMode(success, fail) {
 /* 독서량&장르 통계 가져오기 */
 export function getUserStatistics(date, success, fail) {
   apiInstance
-    .get(`kkubooks/mypage/bookstatistics/${date}`)
+    .get(`kkubooks/mypage/statistics/${date}/`)
     .then(success)
     .catch(fail);
 }

@@ -39,11 +39,7 @@ function DeleteMemo() {
 
   const memoId = useStoreMemo(state => state.nowMemoId);
   function actionDeleteMemo() {
-    apiDeleteMemo(
-      { memo_id: memoId },
-      response => console.log(response),
-      error => console.log(error),
-    );
+    apiDeleteMemo({ memo_id: memoId });
   }
 
   return (

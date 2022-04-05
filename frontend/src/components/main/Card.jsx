@@ -1,9 +1,13 @@
-import styled from 'styled-components';
+import tw, { styled } from 'twin.macro';
 
-const CardWrapper = styled.div`
+const CardWrapper = styled.div(({ padding }) => [
+  `
   background-color: transparent;
-  padding: 0rem 0.5rem;
-`;
+  padding: ${padding || '0rem 0.5rem'};
+  width: 100%;
+  height: 35vh;
+  `,
+]);
 
 const StyledCard = styled.div`
   position: relative;
@@ -11,16 +15,15 @@ const StyledCard = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem 1.5rem;
-  min-height: 240px;
-  width: 100%;
   box-shadow: 0px 0px 6px rgba(1, 1, 1, 0.2);
   background-color: white;
+  padding: 2rem;
+  height: 99%;
 `;
 
-function Card({ children }) {
+function Card({ children, wrapperPadding }) {
   return (
-    <CardWrapper>
+    <CardWrapper padding={wrapperPadding}>
       <StyledCard>{children}</StyledCard>
     </CardWrapper>
   );

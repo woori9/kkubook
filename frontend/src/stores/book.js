@@ -1,18 +1,50 @@
 import create from 'zustand';
-import books from '../data/books';
+import { persist } from 'zustand/middleware';
+import { getBooklist } from '../api/main';
+import { getBooks, getMemoList } from '../api/bookshelf';
 
 const useStore = create((set, get) => ({
-  books,
-  updateOrder: bookId => {
-    const bookLists = get().books;
-    const targetBook = bookLists.find(book => book.id === bookId);
-    const restBooks = bookLists.filter(book => book.id !== bookId);
-    return set({ books: [targetBook, ...restBooks] });
+  // main
+  mainbooks: [],
+  firstCardIndex: 1,
+  setCardIndex: index => {
+    return set({ firstCardIndex: index });
   },
-  deleteBook: bookId => {
-    const bookList = get().books;
-    return set({ books: bookList.filter(book => book.id !== bookId) });
+  getMainBooks: async () => {
+    const books = await getBooklist();
+    return set({ mainbooks: books });
+  },
+  // bookshelf
+  bookshelf: [],
+  category: 0,
+  setCategory: category => {
+    return set({ category });
+  },
+  getBooklist: async () => {
+    const books = await getBooks();
+    return set({ bookshelf: books });
   },
 }));
 
+const selectedBookStore = create(
+  persist(
+    (set, get) => ({
+      selectedBook: null,
+      setSelectedBook: book => {
+        return set({ selectedBook: book });
+      },
+      memos: [],
+      getMemos: async () => {
+        const memos = await getMemoList();
+        return set({ memos });
+      },
+    }),
+    {
+      name: 'book-storage',
+      getStorage: () => sessionStorage,
+    },
+  ),
+);
+
 export default useStore;
+export { selectedBookStore };

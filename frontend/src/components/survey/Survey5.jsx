@@ -1,7 +1,33 @@
+import { useEffect } from 'react';
+import tw, { styled } from 'twin.macro';
 import InputBtn from './InputBtn';
 import PrevNextBtn from './PrevNextBtn';
 
-function Survey5({ setPrevPage, setNextPage, setSurveyInput }) {
+const Header = styled.h1`
+  ${tw`text-[20px] font-medium`}
+`;
+
+const BtnDiv = styled.div`
+  margin: 1rem 3rem 3rem 3rem;
+
+  .grid-box {
+    display: grid;
+    grid-template-columns: 100px 100px 100px;
+    justify-items: center;
+
+    .input-btn {
+      width: 80%;
+    }
+  }
+`;
+
+function Survey5({
+  setPrevPage,
+  setNextPage,
+  addInterest,
+  removeInterest,
+  interest,
+}) {
   const interestList = [
     '여행',
     '진로',
@@ -32,31 +58,54 @@ function Survey5({ setPrevPage, setNextPage, setSurveyInput }) {
     '소통',
     '가족',
   ];
+
+  useEffect(() => {
+    if (interest.length > 0) {
+      interest.forEach(interestItem => {
+        document.getElementById(interestItem).classList.add('selected');
+      });
+    }
+  }, [interest]);
+
+  function handleAddInterest(interestItem) {
+    if (interest.indexOf(interestItem) >= 0) {
+      removeInterest(interestItem);
+      document.getElementById(interestItem).classList.remove('selected');
+    } else if (interest.length === 5) {
+      alert('최대 5개까지 선택 가능합니다.');
+    } else {
+      addInterest(interestItem);
+      document.getElementById(interestItem).classList.add('selected');
+    }
+  }
+
   return (
     <>
-      <p>요즘 관심사는 무엇인가요?</p>
-      <div>
-        {interestList.map(interest => (
-          <InputBtn
-            key={interest}
-            onClick={() =>
-              setSurveyInput(prev => ({
-                ...prev,
-                interest: prev.interest
-                  ? `${prev.interest} ${interest}`
-                  : interest,
-              }))
-            }
-          >
-            {interest}
-          </InputBtn>
-        ))}
-      </div>
+      <Header>요즘 관심사는 무엇인가요?</Header>
+      <span>(최대 5개)</span>
+      <BtnDiv>
+        <div className="grid-box">
+          {interestList.map(interestItem => (
+            <InputBtn
+              key={interestItem}
+              id={interestItem}
+              onClick={() => handleAddInterest(interestItem)}
+            >
+              {interestItem}
+            </InputBtn>
+          ))}
+        </div>
+      </BtnDiv>
       <div>
         <PrevNextBtn btnClass="prev" onClick={() => setPrevPage()}>
           이전
         </PrevNextBtn>
-        <PrevNextBtn btnClass="next" onClick={() => setNextPage()}>
+        <PrevNextBtn
+          btnClass="next"
+          onClick={() =>
+            interest.length > 0 ? setNextPage() : alert('항목을 선택해주세요.')
+          }
+        >
           다음
         </PrevNextBtn>
       </div>

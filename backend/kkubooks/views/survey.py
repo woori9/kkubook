@@ -35,9 +35,10 @@ def create_survey(request):
             return Response(status=HTTP_201_CREATED)
 
 
-@api_view(['PUT'])
+@api_view(['GET', 'PUT'])
 def feeling(request):
     '''
+    GET: 기분을 조회
     PUT: 기분을 DB에 반영
     '''
     # user = get_object_or_404(User, pk=4)
@@ -45,12 +46,17 @@ def feeling(request):
     if not user:
         return Response(status=HTTP_401_UNAUTHORIZED)
 
-    if request.method == 'PUT':
-        try:
-            survey = Survey.objects.get(user=user)
+    try:
+        survey = Survey.objects.get(user=user)
+        if request.method == 'GET':
+            serializer = FeelingSerializer(survey)
+            return Response(serializer.data)
+        elif request.method == 'PUT':
             serializer = FeelingSerializer(survey, data=request.data)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(status=HTTP_201_CREATED)
-        except:
-            return Response(status=HTTP_400_BAD_REQUEST)
+
+    except:
+        return Response(status=HTTP_400_BAD_REQUEST)
+    

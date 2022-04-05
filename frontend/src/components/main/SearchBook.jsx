@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'twin.macro';
 import SearchResult from './SearchResult';
-// import books from '../../data/books';
 import worryingKkubook from '../../assets/worrying-kkubook.png';
 import { apiSearchBook } from '../../api/main';
 
@@ -93,6 +92,7 @@ function SearchBook() {
   const [isAuthor, setAuthor] = useState('false');
   const [keyword, setKeyword] = useState('');
   const [books, setBooks] = useState([]);
+  const [isSearch, setSearch] = useState(false);
 
   function searchTitle() {
     const reqData = {
@@ -123,12 +123,15 @@ function SearchBook() {
   }
 
   function submitKeyword(event) {
-    if (event.key === 'Enter') {
+    if (keyword.trim() !== '' && event.key === 'Enter') {
       if (isTitle === 'true') {
         searchTitle();
       } else {
         searchAuthor();
       }
+      setSearch(true);
+    } else if (keyword.trim() === '') {
+      setSearch(false);
     }
   }
 
@@ -216,20 +219,24 @@ function SearchBook() {
           </button>
         </div>
       </SearchBox>
-      {books.length ? (
-        <SearchResults>
-          {books.map(book => (
-            <SearchResult key={book.id} book={book} />
-          ))}
-        </SearchResults>
-      ) : (
-        <NoResult>
-          <div className="kkubook-img">
-            <img src={worryingKkubook} alt="kkubook character" />
-          </div>
-          <p>찾으시는 책이 없으면 관리자에게 문의하세요</p>
-        </NoResult>
-      )}
+      {isSearch ? (
+        <div>
+          {books.length ? (
+            <SearchResults>
+              {books.map(book => (
+                <SearchResult key={book.id} book={book} />
+              ))}
+            </SearchResults>
+          ) : (
+            <NoResult>
+              <div className="kkubook-img">
+                <img src={worryingKkubook} alt="kkubook character" />
+              </div>
+              <p>찾으시는 책이 없으면 관리자에게 문의해주세요.</p>
+            </NoResult>
+          )}
+        </div>
+      ) : null}
     </>
   );
 }

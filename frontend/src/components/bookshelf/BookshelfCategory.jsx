@@ -17,7 +17,7 @@ function BookshelfCategory({ category, isSelected, handleClick }) {
       <Button
         isSelected={isSelected}
         type="button"
-        onClick={() => handleClick(category)}
+        onClick={() => handleClick(category.status)}
       >
         {category.name}
       </Button>

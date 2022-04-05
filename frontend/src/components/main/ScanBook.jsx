@@ -70,7 +70,10 @@ function ScanBook() {
             .catch(err => console.log(err));
         }, 100);
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        alert('바코드 스캔을 지원하지 않는 기기입니다');
+        navigate(-1);
+      });
   };
 
   useEffect(() => {

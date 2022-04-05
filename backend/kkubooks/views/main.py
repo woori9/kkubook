@@ -25,6 +25,7 @@ from ..serializers.commit import (
 )
 from ..serializers.bookshelf import (
     BookshelfRatingSerializer,
+    BookshelfListSerializer,
     # BookshelfCurrpageSerializer,
 )
 from ..serializers.kkubookmode import KkubookModeSerializer
@@ -78,18 +79,15 @@ def booklist(request):
     GET: 읽고 있는 책의 상세 정보를 가져온다.
     '''
     user = get_request_user(request)
-
+    # user = get_object_or_404(User, pk=1)
     if not user:
         return Response(status=HTTP_401_UNAUTHORIZED)
 
     if request.method == 'GET':
-        book_id_list = Bookshelf.objects.filter(book_status=1).filter(user_id=user.pk).values('book_id')
-        books = []
-        for id in book_id_list:
-            book = get_object_or_404(Book, pk=id['book_id'])
-            serializer = BookSerializer(book)
-            books.append(serializer.data)
-        return Response(books)
+        books = Bookshelf.objects.filter(book_status=1).filter(user_id=user.pk)
+        serializer = BookshelfListSerializer(books, many=True)
+        return Response(serializer.data)
+
 
 
 @api_view(['GET'])

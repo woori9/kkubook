@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'twin.macro';
 import { apiPutLikeMemo } from '../../api/memo';
+import currentDate from '../../utils/currentDate';
 
 const Container = styled.div`
   background-color: #f2f2f2;
   border-radius: 10px;
-  padding: 2rem;
-  margin-bottom: 2rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
 `;
 const MemoInfo = styled.div`
   display: flex;
@@ -19,7 +20,7 @@ const MemoInfo = styled.div`
     
     .book-info-img {
       margin-right: 10px;
-      width: 60px;
+      width: 10rem;
       img {
         width: 100%;
       }
@@ -60,20 +61,15 @@ const MemoContnet = styled.div`
 
 function MemoContainer({ memo }) {
   const navigate = useNavigate();
-  const { id, content, memo_img, memo_mark, created_at, title, author, image } =
+  const { book_info, id, content, created_at, is_img, memo_img, memo_mark } =
     memo;
   const [isLiked, setLiked] = useState(memo_mark);
 
   function putLikeMemo() {
     const reqData = {
-      memo_mark: isLiked,
+      memo_mark: !isLiked,
     };
-    apiPutLikeMemo(
-      { memo_id: id },
-      reqData,
-      response => console.log(response),
-      error => console.log(error),
-    );
+    apiPutLikeMemo({ memo_id: id }, reqData);
   }
 
   return (
@@ -81,12 +77,12 @@ function MemoContainer({ memo }) {
       <MemoInfo>
         <div className="book-info">
           <div className="book-info-img">
-            <img src={image} alt={title} />
+            <img src={book_info.img_url} alt={book_info.title} />
           </div>
           <div className="book-info-text">
-            <p>{title}</p>
-            <p>{author}</p>
-            <p>{created_at}</p>
+            <p>{book_info.title}</p>
+            <p>{book_info.author}</p>
+            <p>{currentDate(created_at)}</p>
           </div>
         </div>
         {isLiked ? (
@@ -130,14 +126,14 @@ function MemoContainer({ memo }) {
       </MemoInfo>
       <MemoContnet
         role="button"
-        onClick={() => navigate(`/memo/${id}`, { state: { memo } })}
+        onClick={() => navigate(`/memo/${book_info.id}`, { state: { memo } })}
         onKeyDown={() => ''}
         tabIndex={0}
       >
         <div className="memo-text">
           <p>{content}</p>
         </div>
-        {memo_img ? (
+        {is_img !== null ? (
           <div className="memo-img">
             <img src={memo_img} alt="memo-img" />
           </div>

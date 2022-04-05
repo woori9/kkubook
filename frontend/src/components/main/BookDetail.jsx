@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from 'twin.macro';
 import { getBookDetail, getNaverUrl } from '../../api/main';
-import books from '../../data/books';
 import useStore from '../../stores/user';
 import { addBook } from '../../api/bookshelf';
-import useBookshelfStore from '../../stores/bookshelf';
+import useBookStore from '../../stores/book';
 
 const Bar = styled.div`
   position: fixed;
@@ -78,19 +77,13 @@ const Button = styled.button`
   border: ${props => (props.left ? '1px solid #61B864' : 'none')};
   border-radius: 10px;
   background-color: ${props => (props.left ? '#ffffff' : '#8DCD84')};
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
 `;
 
 function BookDetail() {
   const navigate = useNavigate();
   const { bookId } = useParams();
   const userId = useStore(state => state.userInfo.userId);
-  const setSelectedCategory = useBookshelfStore(
-    state => state.setSelectedCategory,
-  );
+  const setCategory = useBookStore(state => state.setCategory);
   const [isbn, getIsbn] = useState('');
   const [title, getTitle] = useState('');
   const [description, getDescription] = useState('');
@@ -99,6 +92,10 @@ function BookDetail() {
   const [imgUrl, getImgUrl] = useState('');
   const [page, getPage] = useState('');
   const [naverUrl, getUrl] = useState('');
+
+  function openPortalDetail() {
+    window.open(`${naverUrl}`, '_blank');
+  }
 
   useEffect(() => {
     getBookDetail(
@@ -113,15 +110,15 @@ function BookDetail() {
         getPublisher(publisher);
         getImgUrl(img_url);
         getPage(page);
+        getNaverUrl(
+          { isbn: `${isbn}` },
+          response => getUrl(response.data.link),
+          error => console.log(error),
+        );
       },
       error => console.log(error),
     );
-    getNaverUrl(
-      { isbn: `${isbn}` },
-      response => getUrl(response.data.link),
-      error => console.log(error),
-    );
-  });
+  }, []);
 
   return (
     <>
@@ -152,18 +149,13 @@ function BookDetail() {
         <Content title="페이지" content={page} />
       </BookInfo>
       <Buttons>
-        <Button left>
-          <a href={naverUrl}>
-            <p>책 상세내용 보기</p>
-          </a>
+        <Button left onClick={() => openPortalDetail()}>
+          <p>책 상세내용 보기</p>
         </Button>
         <Button
           onClick={() => {
             addBook(Number(bookId), userId);
-            setSelectedCategory({
-              name: '읽고 싶은 책',
-              status: 2,
-            });
+            setCategory(2);
             navigate('/bookshelf');
           }}
         >

@@ -4,7 +4,7 @@ import buttonImage from '../../assets/button-image.png';
 import KkubookModal from './KkubookModal';
 
 const Button = styled.button`
-  ${tw`flex justify-center items-center fixed w-[50px] h-[50px] bottom-[57px] right-5 bg-[#fff] cursor-pointer border-none shadow-lg z-[3]`}
+  ${tw`flex justify-center items-center fixed w-[50px] h-[50px] bottom-[60px] right-5 bg-[#fff] cursor-pointer border-none shadow-lg z-[3]`}
   border-radius: 50%;
 `;
 

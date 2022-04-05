@@ -1,22 +1,34 @@
 import PropTypes from 'prop-types';
 import tw, { styled } from 'twin.macro';
 import { useNavigate } from 'react-router-dom';
-import useStore from '../../stores/book';
 import ProgressBar from '../common/ProgressBar';
 
 const BookContainer = styled.div`
+  ${tw`text-dark-gray`}
   width: 100%;
-  padding: 5px;
 
   .title {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: #1f1f1f;
+    font-weight: bold;
+    font-size: 20px;
+    padding-bottom: 5px;
+  }
+  .author {
+    font-size: 15px;
   }
 
   .contents {
-    margin: 15px auto;
+    margin: 10px auto;
     display: flex;
+    width: 100%;
+  }
+
+  .start-date {
+    font-size: 12px;
+    margin-bottom: 10px;
   }
 
   .progress {
@@ -26,8 +38,8 @@ const BookContainer = styled.div`
   }
 
   img {
-    width: 80px;
-    height: 120px;
+    width: 30%;
+    margin-bottom: auto;
   }
 
   .buttons {
@@ -58,32 +70,41 @@ const BookContainer = styled.div`
   .button-title {
     display: inline-block;
     vertical-align: top;
+    color: #000;
   }
 
   .v-line {
     border-left: 1px solid #d4d4d4;
   }
+
+  .page-info {
+    margin-top: 4px;
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+  }
 `;
 
-function MainBook({ book }) {
-  const { id, title, author, image, startFrom, end, totalPage, page, status } =
-    book;
+function MainBook({ book, index, selectBook, setCardIndex }) {
+  const { id, bookId, currPage, startDate, bookInfo } = book;
   const navigate = useNavigate();
-  const updateOrder = useStore(state => state.updateOrder);
 
   return (
     <BookContainer>
-      <h3 className="title">{title}</h3>
-      <h5>{author}</h5>
+      <p className="title">{bookInfo.title}</p>
+      <p className="author">{bookInfo.author}</p>
       <div className="contents">
-        <img src={image} alt={title} />
+        <img src={bookInfo.img_url} alt={bookInfo.title} />
         <div className="progress">
           <div className="progress-items">
-            <p>시작일 {startFrom}</p>
-            <ProgressBar value={page} totalValue={totalPage} />
-            <p>
-              {totalPage} 중에 {page} 페이지
-            </p>
+            <p className="start-date">시작일 {startDate}</p>
+            <ProgressBar value={currPage} totalValue={bookInfo.page} />
+            <div className="page-info">
+              <p>{Math.round((currPage / bookInfo.page) * 100)}%</p>
+              <p>
+                {bookInfo.page} / {currPage} 페이지
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -92,8 +113,9 @@ function MainBook({ book }) {
           className="br-left-bottom"
           type="button"
           onClick={() => {
-            updateOrder(id);
-            navigate(`reading/${id}`);
+            setCardIndex(index + 1);
+            selectBook(book);
+            navigate('/reading');
           }}
         >
           <svg
@@ -117,11 +139,12 @@ function MainBook({ book }) {
         <button
           className="br-right-bottom v-line"
           type="button"
-          onClick={() =>
+          onClick={() => {
+            setCardIndex(index + 1);
             navigate('/creatememo', {
-              state: { id: `${id}`, title: `${title}` },
-            })
-          }
+              state: { id: `${bookId}`, title: `${bookInfo.title}` },
+            });
+          }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

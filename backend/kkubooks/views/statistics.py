@@ -9,7 +9,7 @@ from ..models import (
   Commit,
   Category
 )
-from ..serializers.kkubookmode import KkubookModeOnSerializer
+from ..serializers.kkubookmode import KkubookModeSerializer
 from accounts.token import get_request_user
 from django.http import JsonResponse
 
@@ -17,19 +17,21 @@ User = get_user_model()
 
 @api_view(['POST', 'DELETE'])
 def set_kkubookmode(request):
-
+    # user = get_object_or_404(User, pk=2)
     user = get_request_user(request)
     if not user:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     # 꾸북모드 ON한 사용자 추가
     if request.method == 'POST':
-        serializer = KkubookModeOnSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if not KkubookMode.objects.filter(user=user).exists():
+            serializer = KkubookModeSerializer(data=request.data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save(user=user)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(data='이미 등록된 사용자입니다.', status=status.HTTP_409_CONFLICT)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     # 꾸북모드 OFF한 사용자 삭제
     elif request.method == 'DELETE':
