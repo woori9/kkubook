@@ -13,8 +13,8 @@ def query_MariaDB(query):
      conn = mariadb.connect(
           user="root",
           password="kkubook204",
-          host="localhost",
-          port=3307,
+          host="j6b204.p.ssafy.io",
+          port=3306,
           database="kkubook"
      )
      # start time

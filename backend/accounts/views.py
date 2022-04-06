@@ -10,7 +10,7 @@ from rest_framework.status import (
     HTTP_204_NO_CONTENT,
     HTTP_401_UNAUTHORIZED
 )
-from kkubooks.models import KkubookMode
+from kkubooks.models import KkubookMode, Survey
 from .token import create_token, get_request_user
 from .serializers import UserSerializer
 
@@ -36,19 +36,18 @@ def login_signup(request):
     email = user_info['kakao_account']['email']
 
     nickname = user_info['kakao_account']['profile']['nickname']
+
     # SignUp (DB)
-    is_new = False
     if not User.objects.filter(kakao_email=email).exists():
         User.objects.create(
             username = email,
             kakao_email = email,
             nickname = nickname
             )
-        is_new = True
-    
     # Login
     user = get_object_or_404(User, kakao_email=email)
 
+    is_new = not Survey.objects.filter(user_id=user.pk).exists()
     is_kkubook = KkubookMode.objects.filter(user_id=user.pk).exists()
     if is_kkubook:
         level = KkubookMode.objects.filter(user_id=user.pk).values()[0]['level']
