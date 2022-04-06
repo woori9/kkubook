@@ -66,9 +66,13 @@ def search(request):
             book_list = Book.objects.filter(title__icontains=word)
             serializer = BookSearchSerializer(book_list, many=True)
             return Response(serializer.data)
-        else:
+        elif int(request.GET.get('index')) == 1:
             book_list = Book.objects.filter(author__icontains=word)
             serializer = BookSearchSerializer(book_list, many=True)
+            return Response(serializer.data)
+        else:
+            book = get_object_or_404(Book, isbn=word)
+            serializer = BookSearchSerializer(book)
             return Response(serializer.data)
         
 
