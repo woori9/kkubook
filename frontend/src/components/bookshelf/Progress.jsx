@@ -36,23 +36,30 @@ const StyledProgress = styled.div(({ padding }) => [
   }`,
 ]);
 
-function Pregress({ startFrom, end, status, page, totalPage, padding }) {
+function Pregress({
+  startDate,
+  endDate,
+  currPage,
+  totalPage,
+  isReading,
+  padding,
+}) {
   return (
     <StyledProgress padding={padding || '0px'}>
       <p className="date">
-        시작일: <span>{startFrom || '-'}</span>
+        시작일: <span>{startDate || '-'}</span>
       </p>
       <p className="date">
-        종료일: <span>{end || '-'}</span>
+        종료일: <span>{endDate || '-'}</span>
       </p>
-      {status === 1 && (
+      {isReading && (
         <div className="progress-container">
-          <ProgressBar value={page} totalValue={totalPage} height="7px" />
+          <ProgressBar value={currPage} totalValue={totalPage} height="7px" />
           <div className="page-progress">
             <p>
-              {page} / {totalPage} 페이지
+              {currPage} / {totalPage} 페이지
             </p>
-            <p>{Math.round((page / totalPage) * 100)}%</p>
+            <p>{Math.round((currPage / totalPage) * 100)}%</p>
           </div>
         </div>
       )}

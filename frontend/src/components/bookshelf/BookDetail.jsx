@@ -1,28 +1,12 @@
 import tw, { styled } from 'twin.macro';
-import StarRatings from 'react-star-ratings';
+import { Rating } from 'react-simple-star-rating';
 import Pregress from './Progress';
-import Memo from './Memo';
-import mock_memos from '../../data/memos';
+import bookshelfCategories from '../../constants/bookShelf';
 
 const BookDetailPage = styled.div`
-  padding: 4rem 1rem;
-  margin: 0px auto;
-  text-align: center;
-
-  img {
-    height: 30%;
-    width: 50%;
-    margin: 20px auto;
-  }
-
   .title {
     font-size: 25px;
     word-break: break-all;
-  }
-
-  .subject {
-    margin: 15px auto;
-    text-align: left;
   }
 
   .tag {
@@ -35,41 +19,35 @@ const BookDetailPage = styled.div`
   }
 `;
 
-function BookDetail({ book }) {
+function BookDetail({ book, finishedReading, startedReading, isReading }) {
+  const { bookInfo } = book;
   return (
     <BookDetailPage>
-      <p className="title">{book.title}</p>
-      <img src={book.image} alt={book.title} />
-      <p>{book.author}</p>
-      {book.status === 0 && (
-        <StarRatings
-          rating={book.rating / 2}
-          starRatedColor="orange"
-          starEmptyColor="gray"
-          numberOfStars={5}
-          starDimension="20px"
-          starSpacing="0px"
-        />
+      <p className="title">{bookInfo.title}</p>
+      <img src={bookInfo.img_url} alt={bookInfo.title} />
+      <p>{bookInfo.author}</p>
+      {finishedReading && (
+        <Rating readonly ratingValue={book.rating * 10} size={25} />
       )}
       <br />
-      <p className="tag">선택된 카테고리</p>
-      {book.status !== 2 && (
+      <p className="tag">
+        {book.bookStatus
+          ? bookshelfCategories[book.bookStatus].name
+          : '다 읽은 책'}
+      </p>
+      {startedReading && (
         <>
           <p className="subject">독서기간</p>
           <Pregress
-            startFrom={book.startFrom}
-            end={book.end}
-            status={book.status}
-            page={book.page}
-            totalPage={book.totalPage}
+            startDate={book.startDate}
+            endDate={book.endDate}
+            currPage={book.currPage}
+            totalPage={bookInfo.page}
+            isReading={isReading}
             padding="10px 5px 5px"
           />
         </>
       )}
-      <p className="subject">내 메모</p>
-      {mock_memos.map(memo => (
-        <Memo key={memo.id} memo={memo} />
-      ))}
     </BookDetailPage>
   );
 }

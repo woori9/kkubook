@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 const BookReading = styled.div`
   background-color: white;
-  margin: 1rem auto;
-  height: 14vh;
+  margin: auto;
+  height: 15vh;
   width: 100%;
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.5);
@@ -12,8 +12,7 @@ const BookReading = styled.div`
   align-items: center;
 
   img {
-    height: 100px;
-    width: 70px;
+    height: 90%;
     margin: 5px;
   }
 
@@ -24,13 +23,13 @@ const BookReading = styled.div`
   }
 `;
 
-function Book({ book, isTimerActive, setIsTimerActive }) {
+function Book({ bookInfo, isTimerActive, setIsTimerActive }) {
   return (
     <BookReading>
-      <img src={book.image} alt={book.title} />
+      <img src={bookInfo.img_url} alt={bookInfo.title} />
       <div>
-        <p>{book.title}</p>
-        <p>{book.author}</p>
+        <p>{bookInfo.title}</p>
+        <p>{bookInfo.author}</p>
       </div>
       <button type="button" onClick={() => setIsTimerActive(!isTimerActive)}>
         {isTimerActive ? (

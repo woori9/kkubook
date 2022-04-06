@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const BookContainer = styled.div`
   display: flex;
-  height: 105px;
+  min-height: 105px;
   margin: 1rem;
   cursor: pointer;
 
@@ -17,7 +17,7 @@ const BookContainer = styled.div`
     justify-content: center;
     width: 100%;
     margin-top: 1rem;
-    padding-left: 100px;
+    padding: 0.5rem 0.5rem 0.5rem 100px;
     background-color: #f2f2f2;
     border-radius: 10px;
     display: flex;
@@ -34,12 +34,12 @@ const BookContainer = styled.div`
 `;
 
 function SearchResult({ book }) {
-  const { id, title, author, image, page } = book;
+  const { id, title, author, img_url } = book;
   const navigate = useNavigate();
 
   return (
     <BookContainer onClick={() => navigate(`/bookDetail/${id}`)}>
-      <img src={image} alt={title} />
+      <img src={img_url} alt={title} />
       <div className="book-info">
         <h4 className="book-title">{title}</h4>
         <p className="book-author">{author}</p>

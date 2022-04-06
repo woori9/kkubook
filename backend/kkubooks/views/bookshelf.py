@@ -8,7 +8,10 @@ from ..models import (
   Bookshelf,
   Memo
 )
-from ..serializers.bookshelf import BookshelfSerializer
+from ..serializers.bookshelf import (
+    BookshelfSerializer,
+    BookshelfListSerializer
+)
 from ..serializers.memo import MemoListSerializer
 from accounts.token import get_request_user
 import datetime
@@ -61,8 +64,8 @@ def bookshelf_list(request):
 
     # 서재에 저장된 책 목록을 가져온다.
     if request.method == 'GET':
-        bookshelf = Bookshelf.objects.all()
-        serializer = BookshelfSerializer(bookshelf, many=True)
+        bookshelf = Bookshelf.objects.filter(user_id=user.pk).order_by('-id')
+        serializer = BookshelfListSerializer(bookshelf, many=True)
         return Response(serializer.data)
 
 @api_view(['GET'])
@@ -74,7 +77,7 @@ def get_memo(request, book_id):
 
     # 선택한 책의 메모를 가져온다.
     if request.method == 'GET':
-        memolist = Memo.objects.filter(book_id=book_id)
+        memolist = Memo.objects.filter(book_id=book_id, user_id=user.pk)
         serializer = MemoListSerializer(memolist, many=True)
         return Response(serializer.data)
 

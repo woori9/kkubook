@@ -1,9 +1,11 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
 import CenteredModalBase from './CenteredModalBase';
+import { onKkubookMode } from '../../api/user';
 import happyKkubook from '../../assets/happy-kkubook.png';
 import bizmessage from '../../assets/bizmessage.png';
 import kkubookMode from '../../assets/kkubook-mode.png';
+import useStore from '../../stores/user';
 
 const HeaderP = styled.p`
   ${tw`font-medium`}
@@ -38,7 +40,28 @@ const NextBtn = styled.button`
 `;
 
 function KkubookModal({ open, close }) {
+  const updateUserInfo = useStore(state => state.updateUserInfo);
   const [page, setPage] = React.useState(0);
+
+  function startKkubook() {
+    onKkubookMode(
+      response => {
+        const { user, level, kkubook_days, notcommit_days } = response.data;
+        updateUserInfo({
+          userId: user,
+          kkubookDays: kkubook_days,
+          notcommitDays: notcommit_days,
+          level,
+          isKkubook: true,
+        });
+        window.open('https://pf.kakao.com/_xcsqNb/friend', '_blank');
+      },
+      () => {
+        alert('이미 꾸북모드가 켜져 있어요.');
+      },
+    );
+  }
+
   const data = [
     {
       id: 1,
@@ -81,7 +104,7 @@ function KkubookModal({ open, close }) {
       },
       netxValue: '시작하기',
       nextAction: () => {
-        // TODO: 시작 버튼 클릭 시 페이지 이동
+        startKkubook();
         close();
       },
     },

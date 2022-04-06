@@ -1,6 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'twin.macro';
 import useStore from '../../stores/bottomSheet';
+import useStoreMemo from '../../stores/memo';
+import { apiDeleteMemo } from '../../api/memo';
 
 const Body = styled.div`
   display: flex;
@@ -35,6 +37,11 @@ function DeleteMemo() {
   const navigate = useNavigate();
   const onDismiss = useStore(state => state.onDismiss);
 
+  const memoId = useStoreMemo(state => state.nowMemoId);
+  function actionDeleteMemo() {
+    apiDeleteMemo({ memo_id: memoId });
+  }
+
   return (
     <Body>
       <Message>
@@ -45,8 +52,9 @@ function DeleteMemo() {
           delete
           type="button"
           onClick={() => {
+            actionDeleteMemo();
             onDismiss();
-            navigate('/memo');
+            navigate(-1);
           }}
         >
           메모 삭제하기
@@ -55,7 +63,7 @@ function DeleteMemo() {
           type="button"
           onClick={() => {
             onDismiss();
-            navigate('/memo');
+            navigate(-1);
           }}
         >
           취소

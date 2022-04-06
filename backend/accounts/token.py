@@ -30,11 +30,9 @@ def get_request_user(request):
 
     try:
         data = jwt.decode(str(access_token), settings.SECRET_KEY, algorithms=settings.ALGORITHM) 
-        user = User.objects.get(email=data['email'])
+        user = User.objects.get(kakao_email=data['email'])
         return user
     except jwt.DecodeError:
         return False
     except User.DoesNotExist:
         return False
-
-

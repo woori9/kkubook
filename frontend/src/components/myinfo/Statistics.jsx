@@ -4,11 +4,13 @@ import { months, days } from '../../utils/days';
 import Svg from '../common/Svg';
 import DoughnutChart from './DoughnutChart';
 import { getUserStatistics } from '../../api/user';
+import BookList from './BookList';
+import EmptyMessage from './EmptyMessage';
 
 const StatisticBox = styled.div`
   ${tw`px-page-x`}
   background: none;
-  margin-bottom: 65px;
+  padding-bottom: 65px;
 
   &:before {
     content: '';
@@ -36,14 +38,18 @@ const StatisticBox = styled.div`
     font-size: 14px;
     padding-top: 1rem;
   }
-
-  .prev-next {
-    color: #fff;
-  }
 `;
 
 const Month = styled.button`
   ${tw`border-none bg-transparent`}
+
+  &.prev-next {
+    color: #fff;
+  }
+
+  &.current {
+    color: #000;
+  }
 
   &.possible {
     cursor: pointer;
@@ -142,7 +148,7 @@ function Statistics({ createdAt }) {
           </Month>
         )}
         {/* 이번 달 */}
-        <Month className="date">{months[monthIdx]}</Month>
+        <Month className="date current">{months[monthIdx]}</Month>
         {/* 끝 달 제한 */}
         {lastYearMonth <= currentYearMonth ? (
           <Month disabled />
@@ -190,10 +196,18 @@ function Statistics({ createdAt }) {
           </div>
         </Box>
       </Dl>
-      {userStatistics.category && userStatistics.category.length > 0 && (
-        <Box>
-          <DoughnutChart data={userStatistics.category} />
-        </Box>
+      {userStatistics.book_num > 0 ? (
+        <>
+          <BookList books={userStatistics.book_img} />
+          <Box>
+            <DoughnutChart
+              data={userStatistics.category}
+              bookCnt={userStatistics.book_num}
+            />
+          </Box>
+        </>
+      ) : (
+        <EmptyMessage />
       )}
     </StatisticBox>
   );

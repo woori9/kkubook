@@ -8,13 +8,13 @@ const MiddleText = styled.div`
   width: 100%;
   height: 40px;
   position: absolute;
-  top: 50%;
+  top: 55%;
   left: 0;
   margin-top: 157px;
   line-height: 19px;
   text-align: center;
   font-size: 20px;
-  z-index: 9;
+  z-index: 1;
 `;
 
 const GenreList = styled.ol`
@@ -57,19 +57,26 @@ const chartOptions = {
   },
 };
 
-function DoughnutChart({ data }) {
+function DoughnutChart({ data, bookCnt }) {
   const chartData = {
-    // labels: data.map(genre => genre.name),
-    labels: ['경제경영', '과학', '자기계발'],
+    labels: Object.keys(data).map(key => key),
     datasets: [
       {
         label: 'Genre Statistics',
-        // data: data.map(genre => genre.count),
-        data: [10, 2, 1],
+        data: Object.keys(data).map(key => data[key]),
         backgroundColor: [
+          'rgb(255, 205, 86)',
+          'rgb(164, 235, 77)',
           'rgb(255, 99, 132)',
           'rgb(54, 162, 235)',
-          'rgb(255, 205, 86)',
+          'rgb(84, 207, 133)',
+          'rgb(255, 133, 72)',
+          'rgb(157, 81, 232)',
+          'rgb(20, 239, 189)',
+          'rgb(33, 99, 205)',
+          'rgb(231, 105, 233)',
+          'rgb(244, 241, 35)',
+          'rgb(24, 215, 238)',
         ],
         hoverOffset: 4,
       },
@@ -78,14 +85,14 @@ function DoughnutChart({ data }) {
 
   return (
     <>
-      <MiddleText>{data.length}분야</MiddleText>
+      <MiddleText>{Object.keys(data).length}분야</MiddleText>
       <Doughnut data={chartData} options={chartOptions} />
       <GenreList>
-        {data.map(genreItem => (
-          <GenreListItem name={genreItem.name} key={genreItem.name}>
+        {Object.keys(data).map(key => (
+          <GenreListItem name={key} key={key}>
             <div>
-              <span>{genreItem.count}권</span>
-              <span>{Math.round((genreItem.count / 13) * 100)}%</span>
+              <span>{data[key]}권</span>
+              <span>{Math.round((data[key] / bookCnt) * 100)}%</span>
             </div>
           </GenreListItem>
         ))}

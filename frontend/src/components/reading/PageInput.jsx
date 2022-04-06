@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import tw, { styled } from 'twin.macro';
 import useStore from '../../stores/bottomSheet';
+import { selectedBookStore } from '../../stores/book';
+import blockInvalidChar from '../../utils/validation';
 
 const StyledPageInput = styled.div`
   width: 90%;
@@ -13,7 +15,7 @@ const StyledPageInput = styled.div`
     border-right: none;
     border-bottom: 1px solid gray;
     font-size: 16px;
-    margin: 3rem 0rem 2rem;
+    margin: 1rem 0rem;
   }
 
   input:focus {
@@ -63,26 +65,31 @@ const StyledPageInput = styled.div`
   .button-content {
     display: flex;
   }
+
+  .mt-10 {
+    ${tw`text-main-gray`}
+    margin-top: 10px;
+    font-size: 15px;
+  }
 `;
 
 function PageInput() {
   const inputRef = useRef();
   const hideBottomSheet = useStore(state => state.onDismiss);
+  const selectedBook = selectedBookStore(state => state.selectedBook);
   const submitPage = useStore(state => state.onSubmit);
 
   return (
     <StyledPageInput>
-      <input
-        type="text"
-        ref={inputRef}
-        placeholder="페이지를 입력해주세요 (숫자)"
-      />
+      <p className="mt-10">
+        0 ~ {selectedBook.bookInfo.page} 사이의 숫자를 입력해주세요
+      </p>
+      <input type="number" ref={inputRef} onKeyDown={blockInvalidChar} />
       <button
         type="button"
         className="submit-button"
         onClick={() => {
           submitPage(inputRef.current.value);
-          hideBottomSheet();
         }}
       >
         기록완료

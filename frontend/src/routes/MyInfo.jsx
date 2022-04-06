@@ -1,4 +1,3 @@
-import tw, { styled } from 'twin.macro';
 import Navbar from '../components/common/Navbar';
 import FabButton from '../components/common/FabButton';
 import useStore from '../stores/user';

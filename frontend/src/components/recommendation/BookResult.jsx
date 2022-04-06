@@ -6,8 +6,7 @@ const BookContainer = styled.div`
   margin-right: 1rem;
   .book-img {
     margin-bottom: 1rem;
-    width: 128px;
-    height: 200px;
+    min-height: 20vh;
     display: flex;
     align-items: end;
     img {
@@ -28,13 +27,13 @@ const BookContainer = styled.div`
 `;
 
 function SearchResult({ book }) {
-  const { id, title, author, image } = book;
+  const { id, title, author, img_url } = book;
   const navigate = useNavigate();
 
   return (
     <BookContainer onClick={() => navigate(`/bookDetail/${id}`)}>
       <div className="book-img">
-        <img src={image} alt={title} />
+        <img src={img_url} alt={title} />
       </div>
       <div className="book-info">
         <p className="book-title">{title}</p>

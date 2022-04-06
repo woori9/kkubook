@@ -60,8 +60,8 @@ function Warning() {
         alt="worrying-kkubook"
       />
       <div className="message">
-        <p>2분 동안 책을 읽어보세요</p>
-        <p>그래도 읽기 힘들다면 새로운 책을 추천해 드릴게요</p>
+        <p>2분 동안 책을 읽어보세요.</p>
+        <p>그래도 읽기 힘들다면 새로운 책을 추천해 드릴게요.</p>
       </div>
       <div className="button-group">
         <button className="stop" type="button" onClick={stopReading}>

@@ -4,6 +4,8 @@ from .views import bookshelf
 from .views import statistics
 from .views import memo
 from .views import survey
+from .views import recommend
+
 
 urlpatterns = [
     path('main/kkubookmode/', main.kkubookmode),
@@ -11,7 +13,7 @@ urlpatterns = [
     path('main/booklist/', main.booklist),
     path('main/book/<int:book_id>/', main.book_detail),
     path('main/<int:book_id>/commit/', main.commit),
-    path('main/<int:bookshelf_id>/page/', main.page),
+    # path('main/<int:bookshelf_id>/page/', main.page),
     path('main/commits/', main.commit_list),
     path('main/<int:bookshelf_id>/rating/', main.rating),
 
@@ -31,4 +33,9 @@ urlpatterns = [
 
     path('survey/', survey.create_survey),
     path('survey/feeling/', survey.feeling),
+
+    path('recommend/mf/',recommend.recomm_mf),
+    path('recommend/similar/', recommend.recomm_similar),
+    path('recommend/feeling/', recommend.recomm_feeling),
+    path('recommend/best/', recommend.recomm_best),
 ]

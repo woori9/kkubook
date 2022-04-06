@@ -11,6 +11,7 @@ const StyledButton = styled.button(
   font-size: ${size};
   background-color: ${background};
   color: ${color};
+  margin-bottom: 5px;
   `,
 );
 

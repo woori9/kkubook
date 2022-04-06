@@ -1,6 +1,6 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
-import StarRatings from 'react-star-ratings';
+import { Rating } from 'react-simple-star-rating';
 import Pregress from './Progress';
 
 const StyledBook = styled.li`
@@ -50,30 +50,25 @@ const StyledBook = styled.li`
     align-items: center;
   }
 `;
-function Book({ book, handleClick }) {
+function Book({ book, handleClick, startedReading, finishedReading }) {
+  const { bookInfo } = book;
+
   return (
-    <StyledBook onClick={() => handleClick(book.id)}>
-      <img src={book.image} alt={book.title} />
+    <StyledBook onClick={() => handleClick(book)}>
+      <img src={bookInfo.img_url} alt={bookInfo.title} />
       <div className="description">
-        <p className="title">{book.title}</p>
-        <p className="author">{book.author}</p>
-        {book.status === 0 && (
-          <StarRatings
-            rating={book.rating / 2}
-            starRatedColor="orange"
-            starEmptyColor="gray"
-            numberOfStars={5}
-            starDimension="18px"
-            starSpacing="0px"
-          />
+        <p className="title">{bookInfo.title}</p>
+        <p className="author">{bookInfo.author}</p>
+        {finishedReading && (
+          <Rating readonly ratingValue={book.rating * 10} size={22} />
         )}
-        {book.status !== 2 && (
+        {startedReading && (
           <Pregress
-            startFrom={book.startFrom}
-            end={book.end}
-            status={book.status}
-            page={book.page}
-            totalPage={book.totalPage}
+            startDate={book.startDate}
+            endDate={book.endDate}
+            currPage={book.currPage}
+            totalPage={bookInfo.page}
+            isReading={book.bookStatus === 1}
           />
         )}
       </div>

@@ -1,8 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { styled } from 'twin.macro';
 import useBottomSheetStore from '../../stores/bottomSheet';
+import useStoreMemo from '../../stores/memo';
 import DeleteMemo from './DeleteMemo';
+import { apiPutMemo } from '../../api/memo';
 
 const Bar = styled.div`
   position: fixed;
@@ -51,7 +53,6 @@ const MemoForm = styled.div`
 
 const ImageBox = styled.div`
   width: 100%;
-  height: 20rem;
   margin-bottom: 1rem;
   img {
     width: 100%;
@@ -63,7 +64,7 @@ const ImageBox = styled.div`
 
 const TextBox = styled.div`
   width: 100%;
-  height: 20rem;
+  height: 40vh;
   textarea {
     padding: 1rem;
     line-height: 1.5rem;
@@ -81,12 +82,26 @@ function MemoDetail() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { id, title, content, memo_img } = location.state.memo;
+  const { id, title, content, is_img, memo_img } = location.state.memo;
   const [text, setText] = useState(content);
 
   const openBottomSheet = useBottomSheetStore(
     useCallback(state => state.openSheet),
   );
+
+  const setMemoId = useStoreMemo(useCallback(state => state.setMemoId));
+
+  function putMemo() {
+    const reqData = {
+      content: text,
+    };
+    apiPutMemo({ memo_id: id }, reqData);
+    navigate(-1);
+  }
+
+  useEffect(() => {
+    setMemoId(id);
+  });
 
   return (
     <>
@@ -120,11 +135,13 @@ function MemoDetail() {
           >
             삭제
           </button>
-          <button type="button">수정</button>
+          <button type="button" onClick={() => putMemo()}>
+            수정
+          </button>
         </div>
       </Bar>
       <MemoForm>
-        {memo_img ? (
+        {is_img !== null ? (
           <ImageBox>
             <img src={memo_img} alt="memo-img" draggable={false} />
           </ImageBox>

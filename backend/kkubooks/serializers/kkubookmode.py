@@ -8,10 +8,14 @@ class KkubookModeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = KkubookMode
-        fields = '__all__'
+        fields = ('user', 'level', 'kkubook_days', 'notcommit_days', )
+        read_only_fields = ('user',)
 
-class KkubookModeOnSerializer(serializers.ModelSerializer):
+# class KkubookModeOnSerializer(serializers.ModelSerializer):
     
-    class Meta:
-        model = KkubookMode
-        fields = ('user', )
+#     class Meta:
+#         model = KkubookMode
+#         fields = ('user', )
+#         read_only_fields = ('user',)
+
+        

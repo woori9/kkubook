@@ -2,9 +2,12 @@ import React, { useState, memo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { styled } from 'twin.macro';
 import Header from '../common/Header';
+import { apiPostMemo } from '../../api/memo';
+import { selectedBookStore } from '../../stores/book';
 
 const BarButton = styled.button`
   font-size: 17px;
+  width: 3rem;
   color: #848282;
   border: none;
   background-color: #ffffff;
@@ -20,7 +23,7 @@ const MemoForm = styled.div`
 
 const ImageBox = styled.div`
   width: 100%;
-  height: 20rem;
+  height: 40vh;
   margin-bottom: 1rem;
   :hover {
     opacity: 0.6;
@@ -49,12 +52,14 @@ const ImageBox = styled.div`
     width: 100%;
     height: 100%;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     .uploaded-image {
       border-radius: 10px;
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      object-fit: fit;
     }
 
     #close-icon {
@@ -70,7 +75,7 @@ const ImageBox = styled.div`
 
 const TextBox = styled.div`
   width: 100%;
-  height: 20rem;
+  height: 40vh;
   textarea {
     padding: 1rem;
     line-height: 1.5rem;
@@ -84,31 +89,56 @@ const TextBox = styled.div`
   }
 `;
 
-function CreateMemo({ id, title, backClickHandler }) {
+function CreateMemo({ backClickHandler }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const selectedBook = selectedBookStore(state => state.selectedBook);
+  const bookId = selectedBook.bookId || location.state.id;
+  const bookTitle = selectedBook.bookInfo.title || location.state.title;
 
-  const bookId = id || location.state.id;
-  const bookTitle = title || location.state.title;
-  const [image, setImage] = useState(null);
+  const [text, setText] = useState('');
+  const [loadImg, setLoadImg] = useState(null);
+  const [showImg, setShowImg] = useState(null);
   const [isUploaded, setIsUploaded] = useState(false);
 
   function handleImageChange(event) {
     if (event.target.files && event.target.files[0]) {
+      setLoadImg(event.target.files[0]);
+
       const reader = new FileReader();
 
       reader.onload = function (event) {
-        setImage(event.target.result);
+        setShowImg(event.target.result);
         setIsUploaded(true);
       };
       reader.readAsDataURL(event.target.files[0]);
     }
   }
 
+  function postMemo() {
+    const goBack = () => navigate(-1);
+    const goBackHandler = backClickHandler || goBack;
+
+    const formData = new FormData();
+    if (loadImg !== null) {
+      formData.append('memo_img', loadImg);
+    }
+    formData.append('book', bookId);
+    formData.append('content', text);
+    formData.append('enctype', 'multipart/form-data');
+
+    if (text !== '' || loadImg !== null) {
+      apiPostMemo(formData);
+      goBackHandler();
+    } else {
+      alert('메모를 입력해주세요');
+    }
+  }
+
   return (
     <>
       <Header title={bookTitle} backClickHandler={backClickHandler}>
-        <BarButton>저장</BarButton>
+        <BarButton onClick={() => postMemo()}> 저장 </BarButton>
       </Header>
       <MemoForm>
         <ImageBox>
@@ -147,7 +177,8 @@ function CreateMemo({ id, title, backClickHandler }) {
                 fill="#848282"
                 onClick={() => {
                   setIsUploaded(false);
-                  setImage(null);
+                  setShowImg(null);
+                  setLoadImg(null);
                 }}
               >
                 <path
@@ -158,7 +189,7 @@ function CreateMemo({ id, title, backClickHandler }) {
               </svg>
               <img
                 className="uploaded-image"
-                src={image}
+                src={showImg}
                 alt="upload-img"
                 draggable={false}
               />
@@ -166,7 +197,11 @@ function CreateMemo({ id, title, backClickHandler }) {
           )}
         </ImageBox>
         <TextBox>
-          <textarea placeholder="메모를 작성해보세요" />
+          <textarea
+            placeholder="메모를 작성해보세요"
+            value={text}
+            onChange={event => setText(event.target.value)}
+          />
         </TextBox>
       </MemoForm>
     </>

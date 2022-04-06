@@ -1,16 +1,15 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'twin.macro';
 import Navbar from '../components/common/Navbar';
 import FabButton from '../components/common/FabButton';
 import bookshelfCategories from '../constants/bookShelf';
 import BookshelfCategory from '../components/bookshelf/BookshelfCategory';
-import useBookStore from '../stores/book';
-import useBookshelfStore from '../stores/bookshelf';
+import useBookStore, { selectedBookStore } from '../stores/book';
 import Book from '../components/bookshelf/Book';
 
 const BookshelfPage = styled.div`
-  padding: 0 1rem;
+  padding: 0 1rem 4rem;
   margin: 0px auto;
 
   header {
@@ -34,29 +33,34 @@ const BookshelfPage = styled.div`
 
 function BookShelf() {
   const navigate = useNavigate();
-  const { selectedCategory, setSelectedCategory } = useBookshelfStore(
-    state => state,
-  );
-
+  const selectedCategory = useBookStore(state => state.category);
+  const setCategory = useBookStore(state => state.setCategory);
+  const getBooklist = useBookStore(state => state.getBooklist);
+  const setSelectedBook = selectedBookStore(state => state.setSelectedBook);
   const books = useBookStore(
     useCallback(
       state => {
-        return state.books.filter(
-          book => book.status === selectedCategory.status,
+        return state.bookshelf.filter(
+          book => book.bookStatus === selectedCategory,
         );
       },
       [selectedCategory],
     ),
   );
 
+  useEffect(() => {
+    getBooklist();
+  }, []);
+
   const selectCategory = category => {
-    if (category.name !== selectedCategory.name) {
-      setSelectedCategory(category);
+    if (category !== selectedCategory) {
+      setCategory(category);
     }
   };
 
-  const selectBook = bookId => {
-    navigate(`/bookshelf/book/${bookId}`);
+  const selectBook = book => {
+    setSelectedBook(book);
+    navigate('/bookshelf/book');
   };
 
   return (
@@ -69,9 +73,9 @@ function BookShelf() {
         <ul>
           {bookshelfCategories.map(category => (
             <BookshelfCategory
-              key={category.status}
+              key={category.name}
               category={category}
-              isSelected={selectedCategory.name === category.name}
+              isSelected={selectedCategory === category.status}
               handleClick={selectCategory}
             />
           ))}
@@ -79,7 +83,13 @@ function BookShelf() {
 
         <ul>
           {books.map(book => (
-            <Book key={book.id} book={book} handleClick={selectBook} />
+            <Book
+              key={book.id}
+              book={book}
+              handleClick={selectBook}
+              startedReading={book.bookStatus !== 2}
+              finishedReading={book.bookStatus === 0}
+            />
           ))}
         </ul>
       </BookshelfPage>

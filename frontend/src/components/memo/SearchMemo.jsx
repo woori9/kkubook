@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'twin.macro';
-import memos from '../../data/memos';
+import { apiGetMemos } from '../../api/memo';
 import MemoContainer from './MemoContainer';
 
 const Bar = styled.div`
@@ -47,7 +47,25 @@ const MemoList = styled.div`
 
 function SearchMemo() {
   const navigate = useNavigate();
+  const [memos, setMemos] = useState([]);
   const [keyword, setKeyword] = useState('');
+
+  async function getMemos() {
+    const resData = await apiGetMemos();
+    setMemos(resData);
+  }
+
+  async function getMemoResults(inputKeyword) {
+    const memoList = await apiGetMemos();
+    const memoResults = memoList.filter(memo =>
+      memo.content.includes(inputKeyword.trim()),
+    );
+    return setMemos(memoResults);
+  }
+
+  useEffect(() => {
+    getMemos();
+  }, []);
 
   return (
     <>
@@ -88,7 +106,10 @@ function SearchMemo() {
           <input
             placeholder="메모 내용을 검색해 보세요."
             value={keyword}
-            onChange={event => setKeyword(event.target.value)}
+            onChange={event => {
+              setKeyword(event.target.value);
+              getMemoResults(event.target.value);
+            }}
           />
           <svg
             id="delete-keyword"
@@ -97,7 +118,10 @@ function SearchMemo() {
             className="h-5 w-5"
             viewBox="0 0 20 20"
             fill="#848282"
-            onClick={() => setKeyword('')}
+            onClick={() => {
+              setKeyword('');
+              getMemoResults('');
+            }}
           >
             <path
               fillRule="evenodd"

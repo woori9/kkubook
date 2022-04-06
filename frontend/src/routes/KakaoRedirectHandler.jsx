@@ -52,7 +52,7 @@ function KakaoRedirectHandler() {
         const accessToken = response.data.access_token;
         getUserInfo(accessToken, res => {
           const {
-            user_id,
+            user,
             nickname,
             is_kkubook,
             kkubook_complete,
@@ -62,10 +62,10 @@ function KakaoRedirectHandler() {
             access_token,
             is_new,
           } = res.data;
-          console.log(res);
+          sessionStorage.setItem('Authorization', access_token);
           apiInstance.defaults.headers.common.Authorization = `Bearer ${access_token}`;
           setUserInfo({
-            userId: user_id,
+            userId: user,
             kkubookComplete: kkubook_complete,
             isKkubook: is_kkubook,
             kkubookDays: kkubook_days,
@@ -74,7 +74,11 @@ function KakaoRedirectHandler() {
             nickname,
             level,
           });
-          navigate('/');
+          if (is_new === true) {
+            navigate('/survey');
+          } else {
+            navigate('/');
+          }
         });
       },
       () => {

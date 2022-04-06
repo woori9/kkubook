@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'twin.macro';
 import Navbar from '../components/common/Navbar';
 import FabButton from '../components/common/FabButton';
 import MemoContainer from '../components/memo/MemoContainer';
-import memos from '../data/memos';
+import { apiGetMemos } from '../api/memo';
+import backKkubook from '../assets/back-kkubook.png';
 
 const MemoRoot = styled.div`
   padding: 1rem;
   padding-top: 4rem;
   padding-bottom: 5rem;
 `;
+
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -24,6 +26,7 @@ const Header = styled.div`
     cursor: pointer;
   }
 `;
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -51,9 +54,49 @@ const CheckMark = styled.div`
 }
 `;
 
+const NoMemo = styled.div`
+  min-height: 10rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 5rem;
+
+  img {
+    display: block;
+    width: 4.5rem;
+    height: auto;
+    margin-bottom: 1rem;
+  }
+`;
+
 function Memo() {
   const navigate = useNavigate();
   const [likedMemos, setLikedMemos] = useState(false);
+  const [memos, setMemos] = useState([]);
+  const [isEmpty, setEmpty] = useState(false);
+
+  async function getMemos() {
+    const resData = await apiGetMemos();
+    setMemos(resData);
+    if (resData.length === 0) {
+      setEmpty(true);
+    }
+  }
+
+  async function getLikedMemos(likeStatus) {
+    const memoList = await apiGetMemos();
+    if (likeStatus) {
+      const likeStatusMemos = memoList.filter(
+        memo => memo.memo_mark === likeStatus,
+      );
+      return setMemos(likeStatusMemos);
+    }
+    return setMemos(memoList);
+  }
+  useEffect(() => {
+    getMemos();
+  }, []);
 
   return (
     <>
@@ -82,7 +125,10 @@ function Memo() {
           <div
             className="form-check"
             role="button"
-            onClick={() => setLikedMemos(!likedMemos)}
+            onClick={() => {
+              setLikedMemos(!likedMemos);
+              getLikedMemos(!likedMemos);
+            }}
             onKeyDown={() => ''}
             tabIndex={0}
           >
@@ -109,9 +155,22 @@ function Memo() {
             )}
             <p className="check-label">좋아하는 메모</p>
           </div>
-          {memos.map(memo => (
-            <MemoContainer key={memo.id} memo={memo} />
-          ))}
+          {isEmpty ? (
+            <NoMemo>
+              <img src={backKkubook} alt="back of kkubook character" />
+              <p>아직 작성한 메모가 없습니다.</p>
+            </NoMemo>
+          ) : (
+            <div>
+              {memos.length ? (
+                <div>
+                  {memos.map(memo => (
+                    <MemoContainer key={memo.id} memo={memo} />
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          )}
         </Container>
       </MemoRoot>
     </>
