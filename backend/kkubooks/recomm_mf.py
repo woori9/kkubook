@@ -113,6 +113,7 @@ def mf_algorithm():
           data = pickle.load(f)
 
 # 스케쥴링
-schedule.every().day.at("03:00:00").do(mf_algorithm)
-while True:
-     schedule.run_pending()
+# schedule.every().day.at("03:00:00").do(mf_algorithm)
+# while True:
+#      schedule.run_pending()
+mf_algorithm()
