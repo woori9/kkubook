@@ -13,7 +13,7 @@ from rest_framework.status import (
 from kkubooks.models import KkubookMode, Survey
 from .token import create_token, get_request_user
 from .serializers import UserSerializer
-
+from datetime import datetime
 
 User = get_user_model()
 
@@ -46,14 +46,30 @@ def login_signup(request):
             )
     # Login
     user = get_object_or_404(User, kakao_email=email)
-
     is_new = not Survey.objects.filter(user_id=user.pk).exists()
     is_kkubook = KkubookMode.objects.filter(user_id=user.pk).exists()
     if is_kkubook:
-        level = KkubookMode.objects.filter(user_id=user.pk).values()[0]['level']
-        kkubook_days = level = KkubookMode.objects.filter(user_id=user.pk).values()[0]['kkubook_days']
+        kkubook = KkubookMode.objects.get(user_id=user.pk)
+        level = kkubook.level
+        kkubook_days = kkubook.kkubook_days
+        notcommit_days = kkubook.notcommit_days
+        last = kkubook.updated_at
+        today = datetime.today()
+        day_delta = (today - last).days - 1
+
+        # Calculate notcommit_days
+        if day_delta > 0:
+            notcommit_days += day_delta
+            if notcommit_days >= 10:
+                is_kkubook = False
+                kkubook.delete()
+            else:
+                kkubook.notcommit_days = notcommit_days
+                kkubook.save()
+
     else:
-        level = kkubook_days = -1
+        level = kkubook_days = notcommit_days = -1
+
     
     payload = {'email': user.kakao_email}
 
@@ -67,6 +83,7 @@ def login_signup(request):
         'kkubook_complete': user.kkubook_complete,
         'level': level,
         'kkubook_days': kkubook_days,
+        'notcommit_days': notcommit_days,
         'created_at': user.created_at,
         'access_token': jwt_access_token,
         'is_new': is_new,
