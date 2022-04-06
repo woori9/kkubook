@@ -6,7 +6,9 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from ..models import (
   Bookshelf,
-  Memo
+  Memo,
+  Commit,
+  KkubookMode,
 )
 from ..serializers.bookshelf import (
     BookshelfSerializer,
@@ -37,22 +39,36 @@ def create_book(request):
 def bookshelf_detail(request, bookshelf_id):
 
     user = get_request_user(request)
+
     if not user:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-    book = get_object_or_404(Bookshelf, pk=bookshelf_id)
+    bookshelf = get_object_or_404(Bookshelf, pk=bookshelf_id)
 
     # 서재에 등록된 책의 상태 및 페이지를 변경한다.
     if request.method == 'PUT':
-        serializer = BookshelfSerializer(book, data=request.data)
-        if serializer.is_valid():
+        serializer = BookshelfSerializer(bookshelf, data=request.data)
+        today = str(datetime.datetime.now())[:10]
+        try:
+            tmp = request.data['curr_page']
+            commits = Commit.objects.filter(user_id=user.pk, start_time__contains = today)
+            kkubookmode = KkubookMode.objects.get(user_id=user.pk)
+            if len(commits) == 1:
+                num = kkubookmode.kkubook_days + 1
+                kkubookmode.level += (num // 10)
+                kkubookmode.kkubook_days = (num % 10)
+                kkubookmode.save()
+        except KeyError:
+            pass
+
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     # 서재에서 책을 삭제한다.
     elif request.method == 'DELETE':
-        book.delete()
+        bookshelf.delete()
         return Response(data='정상적으로 삭제되었습니다.', status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['GET'])
@@ -93,8 +109,8 @@ def get_naver_api(request):
     if not user:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-    CLIENT_ID = get_secret("CLIENT_ID")
-    CLIENT_SECRET = get_secret("CLIENT_SECRET")
+    CLIENT_ID = 'Jyo29oClP9wTj1SDk8Bz'
+    CLIENT_SECRET = 'i0c7ntDiXt'
     ISBN = request.query_params['isbn']
     NAVER_BOOK_URL = f'https://openapi.naver.com/v1/search/book_adv.json?d_isbn={ISBN}'
     data = requests.get(

@@ -1,13 +1,19 @@
 from rest_framework import serializers
-from ..models import Bookshelf
+from ..models import Bookshelf, KkubookMode
 from .book import BookInfoSerializer
+from .kkubookmode import KkubookModeSerializer
 
 class BookshelfSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bookshelf
         fields = '__all__'
-
+    
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        kkubookmode = KkubookMode.objects.get(user_id=instance.user_id)
+        response['kkubookmode'] = KkubookModeSerializer(kkubookmode).data
+        return response
   
 class BookshelfRatingSerializer(serializers.ModelSerializer):
 

@@ -41,7 +41,7 @@ def set_kkubookmode(request):
 
 @api_view(['GET'])
 def get_user_statistics(request, yyyymm):
-
+    # user = get_object_or_404(User, pk=1)
     user = get_request_user(request)
     if not user:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -51,13 +51,16 @@ def get_user_statistics(request, yyyymm):
         month=yyyymm[4:6]
 
         # 독서량 통계
-        # Commit table에서 start time의 x달 commit 수
-        commit_num = Commit.objects.filter(user_id=user.pk, start_time__contains=year+'-'+month).count()
-
+        # Commit table에서 start time의 x달 commit 수 (날짜 중복 제거)
+        books = Commit.objects.filter(user_id=user.pk, start_time__contains=year+'-'+month).values('start_time', 'book_id')
+        days = set()
+        for book in books:
+            days.add(str(book['start_time'])[8:10])
+        days_num = len(days)
+        
         # Commit table에서 yyyy년 mm월에 읽은 책 수
-        books = Commit.objects.filter(user_id=user.pk, start_time__contains=year+'-'+month)
-        books = books.values('book_id').distinct()
-        book_num = books.count()
+        book_num = books.values('book_id').distinct().count()
+
         
         # 장르 통계
         # Commit table에서 yyyy년 mm월에 읽은 책의 장르 종류, 장르별 책 수
@@ -72,12 +75,12 @@ def get_user_statistics(request, yyyymm):
                 category[main_category] += 1
             else:
                 category[main_category] = 1
+        category_sorted = dict(sorted(category.items(), key=lambda x: x[1], reverse=True))
 
         response_data = {
-            "commit_num" : commit_num,
+            "commit_num" : days_num,
             "book_num" : book_num,
-            "category" : category,
+            "category" : category_sorted,
             "book_img" : book_img
         }
-        
         return JsonResponse(response_data, json_dumps_params={'ensure_ascii': False})
