@@ -13,8 +13,8 @@ def query_MariaDB(query):
      conn = mariadb.connect(
           user="root",
           password="kkubook204",
-          host="localhost",
-          port=3307,
+          host="j6b204.p.ssafy.io",
+          port=3306,
           database="kkubook"
      )
      # start time
@@ -28,18 +28,15 @@ def query_MariaDB(query):
      # Close connection
      end_tm = datetime.now()
 
-     print('START TIME : ', str(start_tm))
-     print('END TIME : ', str(end_tm))
-     print('ELAP time :', str(end_tm - start_tm))
      conn.close()
 
      return query_result
 
 
 def predict_table():
-     df_book = query_MariaDB("SELECT id from kkubooks_book limit 100")
+     df_book = query_MariaDB("SELECT id from kkubooks_book")
      df_bookshelf = query_MariaDB("SELECT book_id, rating, user_id from kkubooks_bookshelf where book_status=0")
-     user_list = query_MariaDB("SELECT distinct user_id from kkubooks_bookshelf")
+     user_list = query_MariaDB("SELECT distinct user_id from kkubooks_bookshelf where book_status=0")
      user_list = user_list.values.tolist()
 
      users = []
@@ -66,7 +63,7 @@ def predict_table():
 
      # scipy에서 제공해주는 svd
      # U 행렬, sigma 행렬, V 전치 행렬 반환
-     U, sigma, Vt = svds(matrix_user_mean, k=6)  # k의 의미?
+     U, sigma, Vt = svds(matrix_user_mean, k=matrix_user_mean.shape[0]//2)  # k의 의미?
 
      sigma = np.diag(sigma)  # 0이 포함된 대칭행렬로 변환
 
@@ -112,9 +109,8 @@ def mf_algorithm():
           pickle.dump(predict_result, f, pickle.HIGHEST_PROTOCOL)
 
      # 결과값 pickle 읽기
-     # with open('predict_result', 'rb') as f:
-     #      data = pickle.load(f)s
-
+     with open('predict_result', 'rb') as f:
+          data = pickle.load(f)
 
 # 스케쥴링
 schedule.every().day.at("03:00:00").do(mf_algorithm)
