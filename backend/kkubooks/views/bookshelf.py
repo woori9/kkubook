@@ -53,12 +53,18 @@ def bookshelf_detail(request, bookshelf_id):
             tmp = request.data['curr_page']
             commits = Commit.objects.filter(user_id=user.pk, start_time__contains = today)
             kkubookmode = KkubookMode.objects.get(user_id=user.pk)
+
             if len(commits) == 1:
                 num = kkubookmode.kkubook_days + 1
                 kkubookmode.level += (num // 10)
                 kkubookmode.kkubook_days = (num % 10)
                 kkubookmode.save()
+
+        # page 수정이 아닐때
         except KeyError:
+            pass
+        # 꾸북모드 off 유저
+        except KkubookMode.DoesNotExist:
             pass
 
         if serializer.is_valid(raise_exception=True):
