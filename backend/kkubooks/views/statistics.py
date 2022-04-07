@@ -52,14 +52,15 @@ def get_user_statistics(request, yyyymm):
 
         # 독서량 통계
         # Commit table에서 start time의 x달 commit 수 (날짜 중복 제거)
-        books = Commit.objects.filter(user_id=user.pk, start_time__contains=year+'-'+month).values('start_time', 'book_id')
+        commits = Commit.objects.filter(user_id=user.pk, start_time__contains=year+'-'+month).values('start_time', 'book_id')
         days = set()
-        for book in books:
-            days.add(str(book['start_time'])[8:10])
+        for commit in commits:
+            days.add(str(commit['start_time'])[8:10])
         days_num = len(days)
         
         # Commit table에서 yyyy년 mm월에 읽은 책 수
-        book_num = books.values('book_id').distinct().count()
+        books = commits.values('book_id').distinct()
+        book_num = books.count()
 
         
         # 장르 통계
